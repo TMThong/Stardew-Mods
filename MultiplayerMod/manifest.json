@@ -1,0 +1,10 @@
+﻿{
+  "Name": "MultiplayerMod",
+  "Author": "ModAuthor",
+  "Version": "1.0.0",
+  "Description": "Mod Template",
+  "UniqueID": "ModAuthor.MultiplayerMod",
+  "EntryDll": "MultiplayerMod.dll",
+  "MinimumApiVersion": "2.11",
+  "UpdateKeys": [ "Nexus:" ]
+}
