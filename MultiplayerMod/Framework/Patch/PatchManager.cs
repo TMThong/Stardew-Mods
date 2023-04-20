@@ -34,12 +34,14 @@ namespace MultiplayerMod.Framework.Patch
                 Patches.Add(new MobileCustomizerPatch());
                 Patches.Add(new MobileFarmChooserPatch());
                 Patches.Add(new SaveGamePatch());
+                //Patches.Add(new GameLocationPatch());
+                //Patches.Add(new SGamePatch());
             }
             else
             {
                 Patches.Add(new CoopMenuPatch());
             }
-          //  Patches.Add(new SGamePatch());
+           // Patches.Add(new SGamePatch());
         }
         public void Apply()
         {

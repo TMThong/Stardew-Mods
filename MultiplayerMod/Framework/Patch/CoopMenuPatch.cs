@@ -78,6 +78,7 @@ namespace MultiplayerMod.Framework.Patch
             object slot = Assembly.GetAssembly(typeof(IClickableMenu)).GetType("StardewValley.Menus.CoopMenu+LanSlot").CreateInstance<object>(new object[] { __instance });
             ModUtilities.Helper.Reflection.GetField<string>(slot, "message").SetValue(ModUtilities.Helper.Translation.Get("client.join"));
             ModUtilities.Helper.Reflection.GetMethod(menuSlots, "Add").Invoke(slot);
+            
         }
     }
 }

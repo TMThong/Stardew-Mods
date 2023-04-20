@@ -21,7 +21,7 @@ namespace MultiplayerMod.Framework.Mobile.Menus
         // Token: 0x060025B8 RID: 9656 RVA: 0x002BEFEC File Offset: 0x002BD1EC
         public SFarmhandMenu(Client client) : base(0)
         {
-             
+
             this.client = client;
             if (client != null)
             {
@@ -106,6 +106,9 @@ namespace MultiplayerMod.Framework.Mobile.Menus
                     {
                         Game1.exitActiveMenu();
                     }
+                    var property = Game1.currentLocation.GetType().GetProperty("tapToMove");
+                    object TapToMove = typeof(IClickableMenu).Assembly.GetType("StardewValley.Mobile.TapToMove").CreateInstance<object>(new object[] { Game1.currentLocation });
+                    property.SetValue(Game1.currentLocation, TapToMove);
                 }
                 else if (this.client.timedOut)
                 {
@@ -118,8 +121,8 @@ namespace MultiplayerMod.Framework.Mobile.Menus
                         this.menuSlots.RemoveAll((SLoadGameMenu.MenuSlot slot) => slot is SFarmhandMenu.FarmhandSlot);
                     }
                 }
-            }           
-            base.update(time);           
+            }
+            base.update(time);
         }
 
         // Token: 0x060025BE RID: 9662 RVA: 0x002BF217 File Offset: 0x002BD417

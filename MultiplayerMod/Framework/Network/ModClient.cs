@@ -14,6 +14,9 @@ using Microsoft.Xna.Framework;
 using Thong.Net;
 using TClient = Thong.Net.Client;
 using TServer = Thong.Net.Server;
+using StardewValley.Locations;
+using StardewValley.Objects;
+
 namespace MultiplayerMod.Framework.Network
 {
 
@@ -34,14 +37,14 @@ namespace MultiplayerMod.Framework.Network
             if (host.Contains(":"))
             {
                 string[] strings = host.Split(':');
-                host= strings[0];
+                host = strings[0];
                 config.Port = int.Parse(strings[1]);
                 ModUtilities.Helper.WriteConfig(config);
             }
         }
 
         public void OnHandle(Message message)
-        {          
+        {
             IncomingMessage incomingMessage = new IncomingMessage();
             incomingMessage.Read(message.Reader);
             Messages.Add(incomingMessage);
@@ -60,9 +63,9 @@ namespace MultiplayerMod.Framework.Network
 
         protected override void receiveMessagesImpl()
         {
-            while(Messages.Count > 0)
+            while (Messages.Count > 0)
             {
-                foreach(IncomingMessage message in Messages.ToArray())
+                foreach (IncomingMessage message in Messages.ToArray())
                 {
                     Messages.Remove(message);
                     processIncomingMessage(message);
@@ -113,11 +116,7 @@ namespace MultiplayerMod.Framework.Network
         {
             return Client.TcpClient.Client.RemoteEndPoint.ToString();
         }
-         
-        protected override void setUpGame()
-        {
-            base.setUpGame();             
-        }
 
+         
     }
 }

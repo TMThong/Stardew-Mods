@@ -6,5 +6,5 @@
   "UniqueID": "multiplayer.mod",
   "EntryDll": "MultiplayerMod.dll",
   "MinimumApiVersion": "3.0",
-  "UpdateKeys": [ "Nexus:" ]
+  "UpdateKeys": [ "Nexus:16582" ]
 }
