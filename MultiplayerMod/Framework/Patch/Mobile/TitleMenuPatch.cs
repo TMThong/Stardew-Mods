@@ -10,6 +10,7 @@ using Microsoft.Xna.Framework;
 using StardewModdingAPI;
 using Microsoft.Xna.Framework.Graphics;
 using StardewValley.Monsters;
+using MultiplayerMod.Framework.Mobile.Menus;
 
 namespace MultiplayerMod.Framework.Patch.Mobile
 {
@@ -30,6 +31,8 @@ namespace MultiplayerMod.Framework.Patch.Mobile
                 typeof(int),
                 typeof(bool)
             }, null), new HarmonyMethod(AccessTools.Method(base.GetType(), "Postfix_receiveLeftClick", null, null)), null, null);
+
+            harmony.Patch(AccessTools.Method(PATCH_TYPE, "CloseSubMenu"), prefix: new HarmonyMethod(this.GetType(), nameof(prefix_CloseSubMenu)));
         }
 
         private static void postfix_ForceSubmenu(TitleMenu __instance, IClickableMenu menu)
@@ -192,7 +195,7 @@ namespace MultiplayerMod.Framework.Patch.Mobile
             }
         }
 
-        
+
 
         private static void Postfix_receiveLeftClick(TitleMenu __instance, int x, int y)
         {
@@ -205,5 +208,31 @@ namespace MultiplayerMod.Framework.Patch.Mobile
             }
         }
         private static int showButtonsTimer = 333;
+
+
+        private static bool prefix_CloseSubMenu(TitleMenu __instance)
+        {
+            if (TitleMenu.subMenu.readyToClose())
+            {
+                IReflectedField<int> buttonsDX = ModUtilities.Helper.Reflection.GetField<int>(__instance, "buttonsDX");
+                buttonsDX.SetValue(-1);
+                if (TitleMenu.subMenu is AboutMenu || TitleMenu.subMenu is LanguageSelectionMenu)
+                {
+                    TitleMenu.subMenu = null;
+                    buttonsDX.SetValue(0);
+                    return true;
+                }
+                IReflectedField<bool> isTransitioningButtons = ModUtilities.Helper.Reflection.GetField<bool>(__instance, "isTransitioningButtons");
+                isTransitioningButtons.SetValue(true);
+                if (TitleMenu.subMenu is LoadGameMenu || TitleMenu.subMenu is SCoopGameMenu || TitleMenu.subMenu is SCoopMenuMobile || TitleMenu.subMenu is SLoadGameMenu || TitleMenu.subMenu is SFarmhandMenu)
+                {
+                    IReflectedField<bool> transitioningFromLoadScreen = ModUtilities.Helper.Reflection.GetField<bool>(__instance, "transitioningFromLoadScreen");
+                    transitioningFromLoadScreen.SetValue(true);
+                }
+                TitleMenu.subMenu = null;
+                Game1.changeMusicTrack("spring_day_ambient", false, Game1.MusicContext.Default);
+            }
+            return true;
+        }
     }
 }

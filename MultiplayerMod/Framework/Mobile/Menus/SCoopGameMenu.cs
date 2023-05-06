@@ -34,7 +34,7 @@ namespace MultiplayerMod.Framework.Mobile.Menus
         // Token: 0x0600267D RID: 9853 RVA: 0x00002DD5 File Offset: 0x00000FD5
         protected override bool hasDeleteButtons()
         {
-            return false;
+            return true;
         }
 
         // Token: 0x170002F6 RID: 758
@@ -68,6 +68,7 @@ namespace MultiplayerMod.Framework.Mobile.Menus
             this.connectionFinished();
 
         }
+         
 
         // Token: 0x06002681 RID: 9857 RVA: 0x002C9C88 File Offset: 0x002C7E88
         protected virtual void connectionFinished()

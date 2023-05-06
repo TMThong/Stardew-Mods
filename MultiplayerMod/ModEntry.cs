@@ -14,6 +14,8 @@ using StardewValley;
 using System.Linq;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework.Graphics;
+using StardewValley.Network;
+using MultiplayerMod.Framework.Network;
 
 namespace MultiplayerMod
 {
@@ -24,8 +26,10 @@ namespace MultiplayerMod
         internal static IModHelper ModHelper;
         internal static IMonitor ModMonitor;
         internal CommandManager CommandManager { get; set; }
+        internal PropertyInfo tapToMoveProperty;
         public override void Entry(IModHelper helper)
         {
+
             ModUtilities.Helper = helper;
             ModUtilities.ModMonitor = Monitor;
             config = helper.ReadConfig<Config>();
@@ -36,7 +40,83 @@ namespace MultiplayerMod
             PatchManager.Apply();
             CommandManager = new CommandManager();
             CommandManager.Apply(helper);
-            
+            //Helper.Events.GameLoop.SaveLoaded += OnSaveLoaded;
+            if (ModUtilities.IsAndroid)
+            {
+                tapToMoveProperty = typeof(GameLocation).GetProperty("tapToMove");
+                Helper.Events.GameLoop.UpdateTicking += OnUpdating;
+            }
+        }
+
+
+
+        void OnUpdating(object sender, UpdateTickingEventArgs e)
+        {
+            if (Game1.currentLocation != null && Game1.gameMode == Game1.playingGameMode && Game1.client != null)
+            {
+                if (tapToMoveProperty.GetValue(Game1.currentLocation) == null)
+                {
+                    object TapToMove = typeof(IClickableMenu).Assembly.GetType("StardewValley.Mobile.TapToMove").CreateInstance<object>(new object[] { Game1.currentLocation });
+                    tapToMoveProperty.SetValue(Game1.currentLocation, TapToMove);
+                }
+            }
+        }
+
+
+        void OnSaveLoaded(object sender, SaveLoadedEventArgs eventArgs)
+        {
+            if (Game1.player.slotCanHost)
+            {
+                if (Game1.server != null)
+                {
+                    List<Server> servers = ModUtilities.Helper.Reflection.GetField<List<Server>>(Game1.server, "servers").GetValue();
+                    foreach (Server server in servers)
+                    {
+                        if (server != null)
+                        {
+                            if (!server.connected())
+                            {
+                                server.initialize();
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    Game1.multiplayerMode = 2;
+                    Game1.server = new GameServer(false);
+                    Game1.server.initializeHost();
+                }
+            }
+
+        }
+
+        void OnMenuChanged(object sender, MenuChangedEventArgs eventArgs)
+        {
+            if (eventArgs.NewMenu != null)
+            {
+                if (eventArgs.NewMenu is TitleMenu)
+                {
+                    Game1.client?.disconnect(false);
+                    Game1.server?.stopServer();
+                }
+            }
+        }
+
+        void OnPlayerWarped(object sender, StardewModdingAPI.Events.WarpedEventArgs warpedEventArgs)
+        {
+            if (warpedEventArgs.NewLocation != null && ModUtilities.IsAndroid)
+            {
+                var property = warpedEventArgs.NewLocation.GetType().GetProperty("tapToMove");
+                if (property.GetValue(warpedEventArgs.NewLocation) == null)
+                {
+                    object TapToMove = typeof(IClickableMenu).Assembly.GetType("StardewValley.Mobile.TapToMove").CreateInstance<object>(new object[] { warpedEventArgs.NewLocation });
+                    property.SetValue(warpedEventArgs.NewLocation, TapToMove);
+                }
+#if DEBUG
+                Monitor.Log("New Location " + warpedEventArgs.NewLocation.name, LogLevel.Warn);
+#endif
+            }
         }
 
         /// <summary>
@@ -45,14 +125,7 @@ namespace MultiplayerMod
         void ApplyDebug()
         {
 #if DEBUG
-            Game1.debugMode = true;
-            Helper.Events.GameLoop.UpdateTicking += (sender, args) =>
-            {
-                if(Game1.client != null && args.Ticks % 30 == 0)
-                {
-                    Monitor.Log($"Game1.displayHUD {Game1.displayHUD} , Game1.eventUp {Game1.eventUp} , Game1.currentBillboard {Game1.currentBillboard} , Game1.gameMode {Game1.gameMode} ,  Game1.freezeControls {Game1.freezeControls} , Game1.panMode {Game1.panMode} , Game1.HostPaused {Game1.HostPaused} , takingMapScreenshot {Game1.game1.takingMapScreenshot}", LogLevel.Warn);
-                }
-            };
+
             var listField = new List<IReflectedField<object>>();
             /*
             try

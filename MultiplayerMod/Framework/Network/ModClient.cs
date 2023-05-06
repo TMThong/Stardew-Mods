@@ -27,7 +27,6 @@ namespace MultiplayerMod.Framework.Network
         private TClient Client = new TClient();
         public String host;
         public Config ModConfig;
-        private object LookObject = new object();
         private List<IncomingMessage> Messages = new List<IncomingMessage>();
         internal ModClient(Config config, string h)
         {
@@ -48,27 +47,31 @@ namespace MultiplayerMod.Framework.Network
             IncomingMessage incomingMessage = new IncomingMessage();
             incomingMessage.Read(message.Reader);
             Messages.Add(incomingMessage);
-            ModUtilities.ModMonitor.Log("receiveMessagesImpl Message " + incomingMessage.MessageType, LogLevel.Warn);
         }
 
         public override void sendMessage(OutgoingMessage message)
         {
-
             Message message1 = new Message(0);
             message.Write(message1.Writer);
             message1.Writer.Close();
             Client.SendMessage(message1);
-
+#if DEBUG
+            ModUtilities.ModMonitor.Log("Client send message " + message.MessageType, LogLevel.Warn);
+#endif
         }
 
         protected override void receiveMessagesImpl()
         {
-            while (Messages.Count > 0)
+            if (Messages.Count > 0)
             {
                 foreach (IncomingMessage message in Messages.ToArray())
                 {
                     Messages.Remove(message);
-                    processIncomingMessage(message);
+                    base.processIncomingMessage(message);
+
+#if DEBUG
+                    ModUtilities.ModMonitor.Log("Client received message " + message.MessageType, LogLevel.Warn);
+#endif
                 }
             }
         }
@@ -99,6 +102,8 @@ namespace MultiplayerMod.Framework.Network
                 catch (Exception e)
                 {
                     ModUtilities.ModMonitor.Log($"Connection to {host} failed", LogLevel.Warn);
+                    this.timedOut = true;
+                    return;
                 }
                 if (!Client.IsConnected)
                 {
@@ -117,6 +122,9 @@ namespace MultiplayerMod.Framework.Network
             return Client.TcpClient.Client.RemoteEndPoint.ToString();
         }
 
-         
+        public void OnDisconected()
+        {
+            disconnect(false);
+        }
     }
 }

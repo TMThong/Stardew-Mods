@@ -1,5 +1,6 @@
 ﻿
 using HarmonyLib;
+using StardewValley;
 using StardewValley.Menus;
 using System;
 
@@ -17,6 +18,7 @@ namespace MultiplayerMod.Framework.Patch.Mobile
         public void Apply(Harmony harmony)
         {
             harmony.Patch(AccessTools.Method(PATCH_TYPE, "receiveLeftClick", new Type[] { typeof(int), typeof(int), typeof(bool) }), postfix: new HarmonyMethod(this.GetType(), nameof(postfix_receiveLeftClick)));
+            harmony.Patch(AccessTools.Method(PATCH_TYPE, "optionButtonClick", new Type[] { typeof(string) }), postfix: new HarmonyMethod(this.GetType(), nameof(postfix_optionButtonClick)));
             harmony.Patch(AccessTools.Constructor(PATCH_TYPE), postfix: new HarmonyMethod(this.GetType(), nameof(postfix_ctor)));
         }
 
@@ -29,6 +31,16 @@ namespace MultiplayerMod.Framework.Patch.Mobile
         private static void postfix_ctor(object __instance)
         {
             skipIntro = false;
+        }
+        private static void postfix_optionButtonClick(string name)
+        {
+            if (name == "OK")
+            {
+                if (Game1.client != null)
+                {
+                    Game1.player.isCustomized.Value = true;
+                }
+            }
         }
     }
 }

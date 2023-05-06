@@ -13,12 +13,9 @@ namespace MultiplayerMod.Framework.Patch.Mobile
     internal class GameLocationPatch : IPatch
     {
         private static readonly Type PATCH_TYPE = typeof(GameLocation);
-        private static PropertyInfo tapToMoveProperty;
-
-        public GameLocationPatch()
-        {
-            tapToMoveProperty = PATCH_TYPE.GetProperty("tapToMove");
-        }
+        public static PropertyInfo tapToMoveProperty;
+         
+        
 
         public void Apply(Harmony harmony)
         {

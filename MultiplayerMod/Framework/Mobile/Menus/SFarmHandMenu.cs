@@ -21,7 +21,7 @@ namespace MultiplayerMod.Framework.Mobile.Menus
         // Token: 0x060025B8 RID: 9656 RVA: 0x002BEFEC File Offset: 0x002BD1EC
         public SFarmhandMenu(Client client) : base(0)
         {
-
+            this.initializeUpperRightCloseButton();
             this.client = client;
             if (client != null)
             {
@@ -29,10 +29,47 @@ namespace MultiplayerMod.Framework.Mobile.Menus
             }
         }
 
+
+        public override void receiveLeftClick(int x, int y, bool playSound = true)
+        {
+
+            if (upperRightCloseButton.bounds.Contains(x, y))
+            {
+                if (Game1.activeClickableMenu is TitleMenu titleMenu)
+                {
+                    TitleMenu.subMenu = null;
+                }
+                else
+                {
+                    Game1.activeClickableMenu = null;
+                }
+                return;
+            }
+
+            base.receiveLeftClick(x, y, playSound);
+        }
+
+        public override void releaseLeftClick(int x, int y)
+        {
+            if (upperRightCloseButton.bounds.Contains(x, y))
+            {
+                if (Game1.activeClickableMenu is TitleMenu titleMenu)
+                {
+                    TitleMenu.subMenu = null;
+                }
+                else
+                {
+                    Game1.activeClickableMenu = null;
+                }
+                return;
+            }
+            base.releaseLeftClick(x, y);
+        }
+
         // Token: 0x060025B9 RID: 9657 RVA: 0x0000507A File Offset: 0x0000327A
         public override bool readyToClose()
         {
-            return true;
+            return this.client.timedOut;
         }
 
         // Token: 0x060025BA RID: 9658 RVA: 0x00002DD5 File Offset: 0x00000FD5
@@ -44,6 +81,7 @@ namespace MultiplayerMod.Framework.Mobile.Menus
         // Token: 0x060025BB RID: 9659 RVA: 0x000020A3 File Offset: 0x000002A3
         protected override void startListPopulation()
         {
+
         }
 
         // Token: 0x060025BC RID: 9660 RVA: 0x002BF028 File Offset: 0x002BD228
@@ -109,6 +147,7 @@ namespace MultiplayerMod.Framework.Mobile.Menus
                     var property = Game1.currentLocation.GetType().GetProperty("tapToMove");
                     object TapToMove = typeof(IClickableMenu).Assembly.GetType("StardewValley.Mobile.TapToMove").CreateInstance<object>(new object[] { Game1.currentLocation });
                     property.SetValue(Game1.currentLocation, TapToMove);
+                    Game1.multiplayerMode = Game1.multiplayerClient;
                 }
                 else if (this.client.timedOut)
                 {
