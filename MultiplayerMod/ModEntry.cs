@@ -35,8 +35,7 @@ namespace MultiplayerMod
             PatchManager = new PatchManager(Helper, ModManifest, config);
             PatchManager.Apply();
             CommandManager = new CommandManager();
-            CommandManager.Apply(helper);
-            
+            CommandManager.Apply(helper);            
         }
 
         /// <summary>
