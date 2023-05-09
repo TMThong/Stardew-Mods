@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using HarmonyLib;
 using MultiplayerMod.Framework.Network;
 using StardewValley.Network;
+using LidgrenServer = MultiplayerMod.Framework.Network.LidgrenServer;
+
 namespace MultiplayerMod.Framework.Patch
 {
     internal class GameServerPatch : IPatch
@@ -18,9 +20,9 @@ namespace MultiplayerMod.Framework.Patch
         }
         private static void Postfix_contruction(GameServer __instance)
         {
-            List<Server> servers = ModUtilities.Helper.Reflection.GetField<List<Server>>(__instance, "servers").GetValue();
-            ModServer modServer = new ModServer(__instance, ModUtilities.ModConfig);
-            servers.Add(modServer);
+            List<Server> servers = ModUtilities.Helper.Reflection.GetField<List<Server>>(__instance, "servers").GetValue();           
+            LidgrenServer lidgrenServer = new LidgrenServer(__instance);
+            servers.Add(lidgrenServer);
         }
     }
 }

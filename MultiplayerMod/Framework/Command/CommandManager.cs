@@ -12,7 +12,7 @@ namespace MultiplayerMod.Framework.Command
         public List<ICommand> Commands = new List<ICommand>();
         public CommandManager() 
         {
-            AddCommand(new ClientConnectMenuCommand());
+            
         }
 
         public void Apply(IModHelper modHelper) 

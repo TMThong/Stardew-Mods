@@ -11,6 +11,7 @@ using StardewValley.Menus;
 using StardewValley;
 using MultiplayerMod.Framework.Patch.Mobile;
 using MultiplayerMod.Framework.Network;
+using LidgrenClient = MultiplayerMod.Framework.Network.LidgrenClient;
 
 namespace MultiplayerMod.Framework.Mobile.Menus
 {
@@ -23,12 +24,13 @@ namespace MultiplayerMod.Framework.Mobile.Menus
             this.widthMod = (float)Game1.viewport.Width / 1280f;
             this.heightMod = (float)Game1.viewport.Height / 720f;
             this.isHostMenu = isHostMenu;
+            this.initializeUpperRightCloseButton();
         }
 
         // Token: 0x0600267C RID: 9852 RVA: 0x002C9C2F File Offset: 0x002C7E2F
         public override bool readyToClose()
         {
-            return !this.isSetUp || base.readyToClose();
+            return  base.readyToClose();
         }
 
         // Token: 0x0600267D RID: 9853 RVA: 0x00002DD5 File Offset: 0x00000FD5
@@ -175,7 +177,8 @@ namespace MultiplayerMod.Framework.Mobile.Menus
 
             ModUtilities.ModConfig.LastIP = address;
             ModUtilities.Helper.WriteConfig(ModUtilities.ModConfig);
-            setMenu(new SFarmhandMenu(ModUtilities.multiplayer.InitClient(new ModClient(ModUtilities.ModConfig, address))));
+            //setMenu(new SFarmhandMenu(ModUtilities.multiplayer.InitClient(new ModClient(ModUtilities.ModConfig, address))));
+            setMenu(new SFarmhandMenu(ModUtilities.multiplayer.InitClient(new LidgrenClient(address))));
         }
 
         

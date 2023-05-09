@@ -20,7 +20,7 @@ namespace MultiplayerMod.Framework.Patch.Mobile
         public void Apply(Harmony harmony)
         {
             harmony.Patch(AccessTools.Method(PATCH_TYPE, "setUpIcons", new Type[0], null), null, new HarmonyMethod(AccessTools.Method(base.GetType(), "Postfix_setUpIcons", null, null)), null);
-            harmony.Patch(AccessTools.Method(PATCH_TYPE, "ForceSubmenu"), postfix: new HarmonyMethod(GetType(), nameof(postfix_ForceSubmenu)));
+            //harmony.Patch(AccessTools.Method(PATCH_TYPE, "ForceSubmenu"), postfix: new HarmonyMethod(GetType(), nameof(postfix_ForceSubmenu)));
             harmony.Patch(AccessTools.Method(PATCH_TYPE, "update", new Type[]
             {
                 typeof(GameTime)
@@ -214,6 +214,13 @@ namespace MultiplayerMod.Framework.Patch.Mobile
         {
             if (TitleMenu.subMenu.readyToClose())
             {
+                if(TitleMenu.subMenu is SFarmhandMenu)
+                {
+                    TitleMenu.subMenu = new MultiplayerMod.Framework.Mobile.Menus.SCoopMenuMobile();
+                    Game1.changeMusicTrack("title_night", false, Game1.MusicContext.Default);
+                    return true;
+                }
+
                 IReflectedField<int> buttonsDX = ModUtilities.Helper.Reflection.GetField<int>(__instance, "buttonsDX");
                 buttonsDX.SetValue(-1);
                 if (TitleMenu.subMenu is AboutMenu || TitleMenu.subMenu is LanguageSelectionMenu)

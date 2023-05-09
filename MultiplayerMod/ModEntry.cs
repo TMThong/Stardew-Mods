@@ -81,12 +81,7 @@ namespace MultiplayerMod
                         }
                     }
                 }
-                else
-                {
-                    Game1.multiplayerMode = 2;
-                    Game1.server = new GameServer(false);
-                    Game1.server.initializeHost();
-                }
+                
             }
 
         }

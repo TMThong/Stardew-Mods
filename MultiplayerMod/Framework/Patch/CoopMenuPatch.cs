@@ -12,6 +12,7 @@ using System.Net;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using LidgrenClient = MultiplayerMod.Framework.Network.LidgrenClient;
 
 namespace MultiplayerMod.Framework.Patch
 {
@@ -48,7 +49,8 @@ namespace MultiplayerMod.Framework.Patch
                         catch (Exception)
                         {
                         }
-                        object farmHandMenu = Assembly.GetAssembly(typeof(IClickableMenu)).GetType("StardewValley.Menus.FarmhandMenu").CreateInstance<object>(new object[] { ModUtilities.multiplayer.InitClient(new ModClient(ModUtilities.ModConfig, address)) });
+                        // object farmHandMenu = Assembly.GetAssembly(typeof(IClickableMenu)).GetType("StardewValley.Menus.FarmhandMenu").CreateInstance<object>(new object[] { ModUtilities.multiplayer.InitClient(new ModClient(ModUtilities.ModConfig, address)) });
+                        object farmHandMenu = Assembly.GetAssembly(typeof(IClickableMenu)).GetType("StardewValley.Menus.FarmhandMenu").CreateInstance<object>(new object[] { ModUtilities.multiplayer.InitClient(new LidgrenClient(address)) });
                         ModUtilities.Helper.Reflection.GetMethod(menu, "setMenu").MethodInfo.Invoke(menu, new object[] { farmHandMenu });
                         ModUtilities.ModConfig.LastIP = address;
                         ModUtilities.Helper.WriteConfig(ModUtilities.ModConfig);

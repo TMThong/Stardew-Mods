@@ -46,6 +46,7 @@ namespace MultiplayerMod.Framework.Mobile.Menus
             {
                 SCoopMenuMobile.tabHeight = 68;
             }
+            this.initializeUpperRightCloseButton();
         }
 
         // Token: 0x06002696 RID: 9878 RVA: 0x002CA7C0 File Offset: 0x002C89C0
@@ -69,6 +70,7 @@ namespace MultiplayerMod.Framework.Mobile.Menus
             {
                 this.pages[0].releaseLeftClick(x, y);
             }
+            base.receiveLeftClick(x, y, playSound);
         }
 
         // Token: 0x06002698 RID: 9880 RVA: 0x002CA875 File Offset: 0x002C8A75
@@ -86,6 +88,7 @@ namespace MultiplayerMod.Framework.Mobile.Menus
             {
                 this.pages[0].releaseLeftClick(x, y);
             }
+            base.releaseLeftClick(x, y);
         }
 
         // Token: 0x06002699 RID: 9881 RVA: 0x002CA88A File Offset: 0x002C8A8A

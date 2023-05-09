@@ -30,7 +30,7 @@ namespace MultiplayerMod.Framework.Mobile.Menus
         }
 
 
-        public override void receiveLeftClick(int x, int y, bool playSound = true)
+        public void receiveLeftClick1(int x, int y, bool playSound = true)
         {
 
             if (upperRightCloseButton.bounds.Contains(x, y))
@@ -49,7 +49,7 @@ namespace MultiplayerMod.Framework.Mobile.Menus
             base.receiveLeftClick(x, y, playSound);
         }
 
-        public override void releaseLeftClick(int x, int y)
+        public void releaseLeftClick1(int x, int y)
         {
             if (upperRightCloseButton.bounds.Contains(x, y))
             {
@@ -179,25 +179,51 @@ namespace MultiplayerMod.Framework.Mobile.Menus
         // Token: 0x060025BF RID: 9663 RVA: 0x002BF244 File Offset: 0x002BD444
         protected override string getStatusText()
         {
-            if (this.client == null)
+            try
             {
-                return Game1.content.LoadString("Strings\\UI:CoopMenu_NoInvites");
+                if (this.client == null)
+                {
+                    return Game1.content.LoadString("Strings\\UI:CoopMenu_NoInvites");
+                }
+                if (this.client.timedOut)
+                {
+                    return Game1.content.LoadString("Strings\\UI:CoopMenu_Failed");
+                }
+                if (this.client.connectionMessage != null)
+                {
+                    return Game1.content.LoadString(this.client.connectionMessage);
+                }
+                if (this.gettingFarmhands || this.approvingFarmhand)
+                {
+                    return Game1.content.LoadString("Strings\\UI:CoopMenu_Connecting");
+                }
+                if (this.menuSlots.Count == 0)
+                {
+                    return Game1.content.LoadString("Strings\\UI:CoopMenu_NoSlots");
+                }
             }
-            if (this.client.timedOut)
+            catch (Exception ex)
             {
-                return Game1.content.LoadString("Strings\\UI:CoopMenu_Failed");
-            }
-            if (this.client.connectionMessage != null)
-            {
-                return Game1.content.LoadString(this.client.connectionMessage);
-            }
-            if (this.gettingFarmhands || this.approvingFarmhand)
-            {
-                return Game1.content.LoadString("Strings\\UI:CoopMenu_Connecting");
-            }
-            if (this.menuSlots.Count == 0)
-            {
-                return Game1.content.LoadString("Strings\\UI:CoopMenu_NoSlots");
+                if (this.client == null)
+                {
+                    return "Strings\\UI:CoopMenu_NoInvites";
+                }
+                if (this.client.timedOut)
+                {
+                    return "Strings\\UI:CoopMenu_Failed";
+                }
+                if (this.client.connectionMessage != null)
+                {
+                    return this.client.connectionMessage;
+                }
+                if (this.gettingFarmhands || this.approvingFarmhand)
+                {
+                    return "Strings\\UI:CoopMenu_Connecting";
+                }
+                if (this.menuSlots.Count == 0)
+                {
+                    return "Strings\\UI:CoopMenu_NoSlots";
+                }
             }
             return null;
         }

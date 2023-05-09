@@ -29,7 +29,7 @@ namespace MultiplayerMod.Framework.Mobile.Menus
         // Token: 0x060053B1 RID: 21425 RVA: 0x0045714D File Offset: 0x0045534D
         public override bool readyToClose()
         {
-            return this._initTask == null && this._deleteTask == null && !this.loading && !this.deleting && this._updatesSinceLastDeleteConfirmScreen > 1;
+            return true;
         }
 
         // Token: 0x17000386 RID: 902

@@ -1,8 +1,8 @@
 ﻿{
   "Name": "MultiplayerMod",
   "Author": "Tran Minh Thong",
-  "Version": "1.0.3",
-  "Description": "It is a Mod that makes it possible for players to play together. It is used by the TCP/IP network protocol. This protocol is not as fast as UDP, but it will be secure. And the network library is written by me, it can run any platform.",
+  "Version": "1.0.7",
+  "Description": "It is a Mod that makes it possible for players to play together",
   "UniqueID": "multiplayer.mod",
   "EntryDll": "MultiplayerMod.dll",
   "MinimumApiVersion": "3.0",

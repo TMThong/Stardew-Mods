@@ -9,7 +9,6 @@ using MultiplayerMod.Framework;
 using System.Reflection;
 using Microsoft.Xna.Framework.Graphics;
 using StardewValley.Network;
-using Thong.Net;
 
 namespace MultiplayerMod.Framework
 {
@@ -34,19 +33,7 @@ namespace MultiplayerMod.Framework
         }
         public static IModHelper Helper;
         internal static Config ModConfig;
-        public static IncomingMessage ReadIncomingMessage(this Message message)
-        {
-            IncomingMessage incomingMessage = new IncomingMessage();
-            incomingMessage.Read(message.Reader);
-            return incomingMessage;
-        }
-
-
-        public static void WriteMessage(this OutgoingMessage outgoingMessage, Message message)
-        {
-            outgoingMessage.Write(message.Writer);
-            message.Writer.Flush();
-        }
+        
 
         #region Reflection
         public static T GetPrivatePropertyValue<T>(this object obj, string propName)
