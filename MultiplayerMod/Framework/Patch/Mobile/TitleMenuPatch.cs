@@ -17,6 +17,13 @@ namespace MultiplayerMod.Framework.Patch.Mobile
     public class TitleMenuPatch : IPatch
     {
         private readonly Type PATCH_TYPE = typeof(TitleMenu);
+        private static IReflectedField<int> quitTimerField;
+
+        public TitleMenuPatch()
+        {
+
+        }
+
         public void Apply(Harmony harmony)
         {
             harmony.Patch(AccessTools.Method(PATCH_TYPE, "setUpIcons", new Type[0], null), null, new HarmonyMethod(AccessTools.Method(base.GetType(), "Postfix_setUpIcons", null, null)), null);
@@ -24,7 +31,7 @@ namespace MultiplayerMod.Framework.Patch.Mobile
             harmony.Patch(AccessTools.Method(PATCH_TYPE, "update", new Type[]
             {
                 typeof(GameTime)
-            }, null), null, new HarmonyMethod(AccessTools.Method(base.GetType(), "Postfix_update", null, null)), null);
+            }, null), postfix: new HarmonyMethod(AccessTools.Method(base.GetType(), "Postfix_update", null, null)));
             harmony.Patch(AccessTools.Method(PATCH_TYPE, "receiveLeftClick", new Type[]
             {
                 typeof(int),
@@ -33,6 +40,7 @@ namespace MultiplayerMod.Framework.Patch.Mobile
             }, null), new HarmonyMethod(AccessTools.Method(base.GetType(), "Postfix_receiveLeftClick", null, null)), null, null);
 
             harmony.Patch(AccessTools.Method(PATCH_TYPE, "CloseSubMenu"), prefix: new HarmonyMethod(this.GetType(), nameof(prefix_CloseSubMenu)));
+           // harmony.Patch(AccessTools.Method(PATCH_TYPE, "performButtonAction"), prefix: new HarmonyMethod(this.GetType(), nameof(prefix_performButtonAction)));
         }
 
         private static void postfix_ForceSubmenu(TitleMenu __instance, IClickableMenu menu)
@@ -188,12 +196,19 @@ namespace MultiplayerMod.Framework.Patch.Mobile
                         ModUtilities.Helper.Reflection.GetField<int>(__instance, "buttonsDX").SetValue(0);
                     }
                 }
+                else if (whichSubMenu.Equals("Exit"))
+                {
+                    Game1.game1.Exit();
+
+                }
                 if (!isTransitioningButtons)
                 {
                     ModUtilities.Helper.Reflection.GetField<string>(__instance, "whichSubMenu").SetValue("");
                 }
             }
         }
+
+        
 
 
 
@@ -203,7 +218,8 @@ namespace MultiplayerMod.Framework.Patch.Mobile
             {
                 if (clickableTextureComponent.name == "Exit" && clickableTextureComponent.bounds.Contains(x, y))
                 {
-
+                    Game1.game1.Exit();
+                    return;
                 }
             }
         }
@@ -214,7 +230,7 @@ namespace MultiplayerMod.Framework.Patch.Mobile
         {
             if (TitleMenu.subMenu.readyToClose())
             {
-                if(TitleMenu.subMenu is SFarmhandMenu)
+                if (TitleMenu.subMenu is SFarmhandMenu)
                 {
                     TitleMenu.subMenu = new MultiplayerMod.Framework.Mobile.Menus.SCoopMenuMobile();
                     Game1.changeMusicTrack("title_night", false, Game1.MusicContext.Default);
@@ -241,5 +257,7 @@ namespace MultiplayerMod.Framework.Patch.Mobile
             }
             return true;
         }
+
+
     }
 }

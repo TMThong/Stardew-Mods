@@ -26,10 +26,9 @@ namespace MultiplayerMod
         internal static IModHelper ModHelper;
         internal static IMonitor ModMonitor;
         internal CommandManager CommandManager { get; set; }
-        internal PropertyInfo tapToMoveProperty;
+        internal static PropertyInfo tapToMoveProperty;
         public override void Entry(IModHelper helper)
-        {
-
+        {             
             ModUtilities.Helper = helper;
             ModUtilities.ModMonitor = Monitor;
             config = helper.ReadConfig<Config>();
@@ -40,27 +39,13 @@ namespace MultiplayerMod
             PatchManager.Apply();
             CommandManager = new CommandManager();
             CommandManager.Apply(helper);
-            //Helper.Events.GameLoop.SaveLoaded += OnSaveLoaded;
             if (ModUtilities.IsAndroid)
             {
                 tapToMoveProperty = typeof(GameLocation).GetProperty("tapToMove");
-                Helper.Events.GameLoop.UpdateTicking += OnUpdating;
             }
         }
 
-
-
-        void OnUpdating(object sender, UpdateTickingEventArgs e)
-        {
-            if (Game1.currentLocation != null && Game1.gameMode == Game1.playingGameMode && Game1.client != null)
-            {
-                if (tapToMoveProperty.GetValue(Game1.currentLocation) == null)
-                {
-                    object TapToMove = typeof(IClickableMenu).Assembly.GetType("StardewValley.Mobile.TapToMove").CreateInstance<object>(new object[] { Game1.currentLocation });
-                    tapToMoveProperty.SetValue(Game1.currentLocation, TapToMove);
-                }
-            }
-        }
+        
 
 
         void OnSaveLoaded(object sender, SaveLoadedEventArgs eventArgs)
@@ -81,7 +66,7 @@ namespace MultiplayerMod
                         }
                     }
                 }
-                
+
             }
 
         }
