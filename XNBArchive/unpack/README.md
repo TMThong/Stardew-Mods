@@ -1,0 +1,1 @@
+﻿Remove the data files extracted from xnb into the folder containing this file.
