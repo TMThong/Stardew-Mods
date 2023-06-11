@@ -11,6 +11,7 @@ using System;
 using System.IO;
 using System.Reflection;
 using xTile;
+using static HarmonyLib.Code;
 using static System.Net.WebRequestMethods;
 
 namespace XNBArchive
@@ -20,19 +21,22 @@ namespace XNBArchive
         internal Config config;
         internal ITranslationHelper i18n => Helper.Translation;
 
+        internal static string AltDirectorySeparatorChar = "/";
+
         internal ContentManager Content;
 
         public override void Entry(IModHelper helper)
         {
             config = helper.ReadConfig<Config>();
+
             Helper.Events.GameLoop.GameLaunched += OnGameLaunched;
 
-            foreach(var reference in Directory.GetFiles(Helper.DirectoryPath + "\\Reference", "*" , SearchOption.AllDirectories))
+            foreach (var reference in Directory.GetFiles(Helper.DirectoryPath.Replace("\\", AltDirectorySeparatorChar + "") + AltDirectorySeparatorChar + "Reference", "*", SearchOption.AllDirectories))
             {
                 FileInfo fileInfo = new FileInfo(reference);
-                if(fileInfo.Exists )
+                if (fileInfo.Exists)
                 {
-                    if(fileInfo.Name.EndsWith(".exe") || fileInfo.Name.EndsWith(".dll"))
+                    if (fileInfo.Name.EndsWith(".exe") || fileInfo.Name.EndsWith(".dll"))
                     {
                         try
                         {
@@ -53,21 +57,22 @@ namespace XNBArchive
             Helper.ConsoleCommands.Add("xnb_pack", "Helps you extract existing xnb files.", (cmd, option) => { pack(); });
             Helper.ConsoleCommands.Add("xnb_unpack", "Help you compress existing data files into xnb files.", (cmd, option) => { unpack(); });
         }
-        
 
-         
+
+
         public void pack()
         {
-            foreach (var file in Directory.GetFiles(unpackPath, "*.package.json", SearchOption.AllDirectories))
+            foreach (string file_ in Directory.GetFiles(unpackPath, "*.package.json", SearchOption.AllDirectories))
             {
+                var file = file_.Replace("\\", AltDirectorySeparatorChar + "");
                 FileInfo fileInfo = new FileInfo(file);
-                string dir = file.Replace(unpackPath + "\\", "").Replace("\\" + fileInfo.Name, "");
+                string dir = file.Replace(unpackPath + AltDirectorySeparatorChar, "").Replace(AltDirectorySeparatorChar + fileInfo.Name, "");
                 try
                 {
                     if (fileInfo.Exists)
                     {
                         PackageData packageData = JsonConvert.DeserializeObject<PackageData>(System.IO.File.ReadAllText(file));
-                        string fileDataPath = unpackPath + "\\" + dir + "\\" + packageData.FileName;
+                        string fileDataPath = unpackPath + AltDirectorySeparatorChar + dir + AltDirectorySeparatorChar + packageData.FileName;
                         if (System.IO.File.Exists(fileDataPath))
                         {
                             object obj = null;
@@ -92,17 +97,17 @@ namespace XNBArchive
                                 {
                                     case Texture2D:
                                         {
-                                            xnbFilePath = packPath + "\\" + dir + "\\" + packageData.FileName.Replace(".png", ".xnb");
+                                            xnbFilePath = packPath + AltDirectorySeparatorChar + dir + AltDirectorySeparatorChar + packageData.FileName.Replace(".png", ".xnb");
                                             break;
                                         }
                                     case Map:
                                         {
-                                            xnbFilePath = packPath + "\\" + dir + "\\" + packageData.FileName.Replace(".tbin", ".xnb");
+                                            xnbFilePath = packPath + AltDirectorySeparatorChar + dir + AltDirectorySeparatorChar + packageData.FileName.Replace(".tbin", ".xnb");
                                             break;
                                         }
                                     default:
                                         {
-                                            xnbFilePath = packPath + "\\" + dir + "\\" + packageData.FileName.Replace(".json", ".xnb");
+                                            xnbFilePath = packPath + AltDirectorySeparatorChar + dir + AltDirectorySeparatorChar + packageData.FileName.Replace(".json", ".xnb");
                                             break;
                                         }
                                 }
@@ -114,7 +119,7 @@ namespace XNBArchive
                                     contentCompiler.Compile(stream, obj, TargetPlatform, GraphicsProfile.HiDef, false, "", "");
                                     stream.Close();
                                 }
-                                Monitor.Log($"Successfully packaged the {dir + "\\" + fileInfo.Name} file", LogLevel.Info);
+                                Monitor.Log($"Successfully packaged the {dir + AltDirectorySeparatorChar + fileInfo.Name} file", LogLevel.Info);
                             }
                             else
                             {
@@ -134,7 +139,7 @@ namespace XNBArchive
                 catch
                 {
 
-                    Monitor.Log($"Packing the {dir + "\\" + fileInfo.Name} file failed", LogLevel.Error);
+                    Monitor.Log($"Packing the {dir + AltDirectorySeparatorChar + fileInfo.Name} file failed", LogLevel.Error);
                 }
             }
         }
@@ -157,18 +162,19 @@ namespace XNBArchive
             }
         }
 
-        public string packPath => Helper.DirectoryPath + "\\pack";
-        public string unpackPath => Helper.DirectoryPath + "\\unpack";
+        public string packPath => Helper.DirectoryPath.Replace("\\" , AltDirectorySeparatorChar + "") + AltDirectorySeparatorChar + "pack";
+        public string unpackPath => Helper.DirectoryPath.Replace("\\", AltDirectorySeparatorChar + "") + AltDirectorySeparatorChar + "unpack";
 
 
 
         public void unpack()
         {
 
-            foreach (var file in Directory.GetFiles(packPath, "*.xnb", SearchOption.AllDirectories))
+            foreach (var file_ in Directory.GetFiles(packPath, "*.xnb", SearchOption.AllDirectories))
             {
+                var file = file_.Replace("\\", AltDirectorySeparatorChar + "");
                 FileInfo fileInfo = new FileInfo(file);
-                string dir = file.Replace(packPath + "\\", "").Replace("\\" + fileInfo.Name, "");
+                string dir = file.Replace(packPath + AltDirectorySeparatorChar, "").Replace(AltDirectorySeparatorChar + fileInfo.Name, "");
                 try
                 {
                     if (fileInfo.Exists)
@@ -186,8 +192,8 @@ namespace XNBArchive
                         PackageData packageData = new PackageData();
                         packageData.FileName = fileInfo.Name.Replace(".xnb", "." + end);
                         packageData.Type = assets.GetType().FullName;
-                        FileInfo dataFileInfo = new FileInfo(unpackPath + "\\" + dir + "\\" + packageData.FileName);
-                        FileInfo packageFileInfo = new FileInfo(unpackPath + "\\" + dir + "\\" + packageData.FileName + ".package.json");
+                        FileInfo dataFileInfo = new FileInfo(unpackPath + AltDirectorySeparatorChar + dir + AltDirectorySeparatorChar + packageData.FileName);
+                        FileInfo packageFileInfo = new FileInfo(unpackPath + AltDirectorySeparatorChar + dir + AltDirectorySeparatorChar + packageData.FileName + ".package.json");
                         dataFileInfo.Directory.Create();
                         packageFileInfo.Directory.Create();
                         using (var st = packageFileInfo.Open(FileMode.OpenOrCreate))
@@ -220,17 +226,16 @@ namespace XNBArchive
                                 }
                         }
                         dataStream.Close();
-                        Monitor.Log($"Successfully extracted the {dir + "\\" + fileInfo.Name} file", LogLevel.Info);
+                        Monitor.Log($"Successfully extracted the {dir + AltDirectorySeparatorChar + fileInfo.Name} file", LogLevel.Info);
                     }
                     else
                     {
                         throw new FileNotFoundException();
                     }
                 }
-                catch
+                catch(Exception e)
                 {
-
-                    Monitor.Log($"Extracting the {dir + "\\" + fileInfo.Name} file failed", LogLevel.Error);
+                    Monitor.Log($"Extracting the {dir + AltDirectorySeparatorChar + fileInfo.Name} file failed", LogLevel.Error);
                 }
             }
         }
