@@ -53,10 +53,12 @@ namespace XNBArchive
             Helper.ConsoleCommands.Add("xnb_pack", "Helps you extract existing xnb files.", (cmd, option) => { pack(); });
             Helper.ConsoleCommands.Add("xnb_unpack", "Help you compress existing data files into xnb files.", (cmd, option) => { unpack(); });
         }
+        
 
+         
         public void pack()
         {
-            foreach (var file in Directory.GetFiles(unpackPath, ".package.json", SearchOption.AllDirectories))
+            foreach (var file in Directory.GetFiles(unpackPath, "*.package.json", SearchOption.AllDirectories))
             {
                 FileInfo fileInfo = new FileInfo(file);
                 string dir = file.Replace(unpackPath + "\\", "").Replace("\\" + fileInfo.Name, "");
@@ -109,7 +111,7 @@ namespace XNBArchive
                                 using (var stream = xnbFileInfo.Open(FileMode.OpenOrCreate))
                                 {
                                     ContentCompiler contentCompiler = new ContentCompiler();
-                                    contentCompiler.Compile(stream, packageData, TargetPlatform, GraphicsProfile.HiDef, false, "", "");
+                                    contentCompiler.Compile(stream, obj, TargetPlatform, GraphicsProfile.HiDef, false, "", "");
                                     stream.Close();
                                 }
                                 Monitor.Log($"Successfully packaged the {dir + "\\" + fileInfo.Name} file", LogLevel.Info);
@@ -137,12 +139,15 @@ namespace XNBArchive
             }
         }
 
+
+
         public TargetPlatform TargetPlatform
         {
             get
             {
                 switch (Constants.TargetPlatform)
                 {
+
                     case GamePlatform.Android: return TargetPlatform.Android;
                     case GamePlatform.Linux: return TargetPlatform.DesktopGL;
                     case GamePlatform.Mac: return TargetPlatform.MacOSX;
@@ -154,6 +159,9 @@ namespace XNBArchive
 
         public string packPath => Helper.DirectoryPath + "\\pack";
         public string unpackPath => Helper.DirectoryPath + "\\unpack";
+
+
+
         public void unpack()
         {
 

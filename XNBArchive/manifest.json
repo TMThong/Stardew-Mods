@@ -1,9 +1,9 @@
 ﻿{
   "Name": "XNBArchive",
-  "Author": "ModAuthor",
+  "Author": "Tran Minh Thong",
   "Version": "1.0.0",
-  "Description": "Mod Template",
-  "UniqueID": "ModAuthor.XNBArchive",
+  "Description": "It can help you decompress or compress XNB files on any platform",
+  "UniqueID": "xnb.archive",
   "EntryDll": "XNBArchive.dll",
   "MinimumApiVersion": "2.11",
   "UpdateKeys": [ "Nexus:" ]
