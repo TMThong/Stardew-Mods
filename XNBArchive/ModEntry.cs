@@ -8,11 +8,11 @@ using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewValley;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Threading;
 using xTile;
-using static HarmonyLib.Code;
-using static System.Net.WebRequestMethods;
 
 namespace XNBArchive
 {
@@ -54,10 +54,33 @@ namespace XNBArchive
         public void OnGameLaunched(object sender, EventArgs eventArgs)
         {
             Content = new FakeContentManager(Game1.game1.Content.ServiceProvider, "Root");
-            Helper.ConsoleCommands.Add("xnb_pack", "Helps you extract existing xnb files.", (cmd, option) => { pack(); });
-            Helper.ConsoleCommands.Add("xnb_unpack", "Help you compress existing data files into xnb files.", (cmd, option) => { unpack(); });
+            Helper.ConsoleCommands.Add("xnb_pack", "Helps you extract existing xnb files.", packAction);
+            Helper.ConsoleCommands.Add("xnb_unpack", "Help you compress existing data files into xnb files.", unpackAction);
         }
 
+        private bool IsPacking = false;
+        private bool IsUnpacking = false;
+
+
+        void packAction(string cmd, string[] options)
+        {
+            if (!IsPacking)
+            {
+                IsPacking = true;
+
+                pack();
+            }
+        }
+
+        void unpackAction(string cmd, string[] options)
+        {
+            if (!IsUnpacking)
+            {
+                IsUnpacking = true;
+
+                unpack();
+            }
+        }
 
 
         public void pack()
@@ -119,7 +142,7 @@ namespace XNBArchive
                                     contentCompiler.Compile(stream, obj, TargetPlatform, GraphicsProfile.HiDef, false, "", "");
                                     stream.Close();
                                 }
-                                Monitor.Log($"Successfully packaged the {dir + AltDirectorySeparatorChar + fileInfo.Name} file", LogLevel.Info);
+                                Log($"Successfully packaged the {dir + AltDirectorySeparatorChar + fileInfo.Name} file", LogLevel.Info);
                             }
                             else
                             {
@@ -136,12 +159,16 @@ namespace XNBArchive
                         throw new FileNotFoundException();
                     }
                 }
-                catch
+                catch (Exception e)
                 {
 
-                    Monitor.Log($"Packing the {dir + AltDirectorySeparatorChar + fileInfo.Name} file failed", LogLevel.Error);
+                    Log($"Packing the {dir + AltDirectorySeparatorChar + fileInfo.Name} file failed", LogLevel.Error);
+#if DEBUG
+                    Log($"{e.GetBaseException()}", LogLevel.Error);
+#endif
                 }
             }
+            IsPacking = false;
         }
 
 
@@ -162,7 +189,7 @@ namespace XNBArchive
             }
         }
 
-        public string packPath => Helper.DirectoryPath.Replace("\\" , AltDirectorySeparatorChar + "") + AltDirectorySeparatorChar + "pack";
+        public string packPath => Helper.DirectoryPath.Replace("\\", AltDirectorySeparatorChar + "") + AltDirectorySeparatorChar + "pack";
         public string unpackPath => Helper.DirectoryPath.Replace("\\", AltDirectorySeparatorChar + "") + AltDirectorySeparatorChar + "unpack";
 
 
@@ -226,18 +253,32 @@ namespace XNBArchive
                                 }
                         }
                         dataStream.Close();
-                        Monitor.Log($"Successfully extracted the {dir + AltDirectorySeparatorChar + fileInfo.Name} file", LogLevel.Info);
+                        Log($"Successfully extracted the {dir + AltDirectorySeparatorChar + fileInfo.Name} file", LogLevel.Info);
                     }
                     else
                     {
                         throw new FileNotFoundException();
                     }
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
-                    Monitor.Log($"Extracting the {dir + AltDirectorySeparatorChar + fileInfo.Name} file failed", LogLevel.Error);
+                    Log($"Extracting the {dir + AltDirectorySeparatorChar + fileInfo.Name} file failed", LogLevel.Error);
+#if DEBUG
+                    Log($"{e.GetBaseException()}", LogLevel.Error);
+#endif
                 }
             }
+            IsUnpacking = false;
+        }
+
+        private void Log(string v, LogLevel error)
+        {
+            if (Constants.TargetPlatform == GamePlatform.Android)
+            {
+                new Thread(() => { Log(v, error); }) { IsBackground = true }.Start();
+                return;
+            }
+            Log(v, error);
         }
     }
 }

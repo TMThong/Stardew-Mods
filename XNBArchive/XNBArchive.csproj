@@ -37,6 +37,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="AssimpNet.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="pack\README.md">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
