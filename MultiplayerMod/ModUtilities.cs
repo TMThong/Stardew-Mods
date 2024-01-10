@@ -128,5 +128,3 @@ namespace MultiplayerMod.Framework
     }
 }
 
-//[assembly:AssemblyTitle("MultiplayerMod")]
-//[assembly:AssemblyCopyright("Copyright © 2021 by Tran Minh Thong")]

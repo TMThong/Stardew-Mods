@@ -1,0 +1,10 @@
+﻿{
+  "Name": "AndroidPatcher",
+  "Author": "Tran Minh Thong",
+  "Version": "1.0.0",
+  "Description": "This mod will fix all errors in Android",
+  "UniqueID": "android.patcher.mod",
+  "EntryDll": "AndroidPatcher.dll",
+  "MinimumApiVersion": "2.11",
+  "UpdateKeys": [ "Nexus:" ]
+}
