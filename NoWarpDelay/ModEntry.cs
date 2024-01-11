@@ -23,7 +23,7 @@ namespace ZeroDelayMap
 
         private static bool prefix_fadeScreenToBlack()
         {
-            if (Game1.isWarping)
+            if (Game1.isWarping && Context.IsPlayerFree)
             {
                 return false;
             }
@@ -33,6 +33,11 @@ namespace ZeroDelayMap
 
         private static void postfix_warpFarmer()
         {
+
+            if (!(Game1.isWarping && Context.IsPlayerFree))
+            {
+                return;
+            }
             var method = AccessTools.Method(typeof(Game1), "onFadeToBlackComplete");
             method.Invoke(Game1.game1, null);
         }
