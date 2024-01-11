@@ -8,6 +8,7 @@ using StardewModdingAPI;
 using MultiplayerMod;
 using HarmonyLib;
 using MultiplayerMod.Framework.Patch.Mobile;
+using MultiplayerMod.Framework.Patch.Desktop;
 
 namespace MultiplayerMod.Framework.Patch
 {
@@ -38,10 +39,12 @@ namespace MultiplayerMod.Framework.Patch
                 Patches.Add(new GameLocationPatch());
                 Patches.Add(new GameServerPatch());
                 Patches.Add(new CarpenterMenuPatch());
+                Patches.Add(new ShippingMenuPatch());
             }
             else
             {
                 Patches.Add(new CoopMenuPatch());
+                Patches.Add(new FarmerPatch());
             }
 
         }

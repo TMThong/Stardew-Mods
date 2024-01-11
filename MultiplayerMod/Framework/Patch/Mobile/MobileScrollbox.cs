@@ -9,9 +9,11 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StardewValley.Menus;
 using StardewModdingAPI;
+using System.Diagnostics;
 
 namespace MultiplayerMod.Framework.Patch.Mobile
 {
+    [DebuggerDisplay("{" + nameof(GetDebuggerDisplay) + "(),nq}")]
     public class MobileScrollbox
     {
         public IReflectedMethod updateMethod { get; }
@@ -91,6 +93,11 @@ namespace MultiplayerMod.Framework.Patch.Mobile
             {
                 havePanelScrolledField.SetValue(value);
             }
+        }
+
+        private string GetDebuggerDisplay()
+        {
+            return ToString();
         }
     }
 }

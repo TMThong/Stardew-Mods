@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -11,6 +12,7 @@ using LidgrenServer = MultiplayerMod.Framework.Network.LidgrenServer;
 
 namespace MultiplayerMod.Framework.Patch
 {
+    [DebuggerDisplay("{" + nameof(GetDebuggerDisplay) + "(),nq}")]
     internal class GameServerPatch : IPatch
     {
         private readonly Type PatchType = typeof(GameServer);
@@ -23,6 +25,11 @@ namespace MultiplayerMod.Framework.Patch
             List<Server> servers = ModUtilities.Helper.Reflection.GetField<List<Server>>(__instance, "servers").GetValue();           
             LidgrenServer lidgrenServer = new LidgrenServer(__instance);
             servers.Add(ModUtilities.multiplayer.InitServer(lidgrenServer));
+        }
+
+        private string GetDebuggerDisplay()
+        {
+            return ToString();
         }
     }
 }

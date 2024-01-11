@@ -8,9 +8,11 @@ using System.Threading.Tasks;
 using static HarmonyLib.Code;
 using Microsoft.Xna.Framework.Graphics;
 using StardewModdingAPI;
+using System.Diagnostics;
 
 namespace MultiplayerMod.Framework.Patch.Mobile
 {
+    [DebuggerDisplay("{" + nameof(GetDebuggerDisplay) + "(),nq}")]
     public class MobileScrollbar
     {
         public IReflectedMethod sliderRunnerContainsMethod { get; }
@@ -47,6 +49,11 @@ namespace MultiplayerMod.Framework.Patch.Mobile
         public void draw(SpriteBatch b)
         {
             drawMethod.Invoke(b);
+        }
+
+        private string GetDebuggerDisplay()
+        {
+            return ToString();
         }
     }
 }
