@@ -18,6 +18,7 @@
 	<ItemGroup>
 		<PackageReference Include="Pathoschild.Stardew.ModBuildConfig" Version="4.1.1" />
 		<PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
+		<PackageReference Include="ZeroTier.Sockets" Version="1.8.4" />
 	</ItemGroup>
 	<ItemGroup>
 		<Reference Include="0Harmony">

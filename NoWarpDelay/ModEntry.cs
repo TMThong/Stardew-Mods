@@ -23,7 +23,7 @@ namespace ZeroDelayMap
 
         private static bool prefix_fadeScreenToBlack()
         {
-            if (Game1.isWarping && Context.IsPlayerFree)
+            if (Game1.isWarping && Context.IsPlayerFree && Game1.timeOfDay < 2600 && Game1.player.stamina >= -13 && Game1.player.health > 0)
             {
                 return false;
             }
@@ -34,7 +34,7 @@ namespace ZeroDelayMap
         private static void postfix_warpFarmer()
         {
 
-            if (!(Game1.isWarping && Context.IsPlayerFree))
+            if (!(Game1.isWarping && Context.IsPlayerFree && Game1.timeOfDay < 2600 && Game1.player.stamina >= -13 && Game1.player.health > 0))
             {
                 return;
             }
