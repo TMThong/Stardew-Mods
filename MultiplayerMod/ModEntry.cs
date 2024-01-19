@@ -46,7 +46,7 @@ namespace MultiplayerMod
             {
                 tapToMoveProperty = typeof(GameLocation).GetProperty("tapToMove");
             }
-            ApplyDebug();
+            //ApplyDebug();
         }
 
         

@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Content;
+﻿using HarmonyLib;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Content.Pipeline;
 using Microsoft.Xna.Framework.Content.Pipeline.Serialization.Compiler;
 using Microsoft.Xna.Framework.Graphics;
@@ -8,8 +9,10 @@ using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewValley;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Threading;
 using xTile;
@@ -24,8 +27,6 @@ namespace XNBArchive
         internal static string AltDirectorySeparatorChar = "/";
 
         internal ContentManager Content;
-
-        private readonly TextureImporter TextureImporter = new TextureImporter();
 
         public override void Entry(IModHelper helper)
         {
@@ -42,7 +43,12 @@ namespace XNBArchive
                     {
                         try
                         {
-                            Assembly.Load(System.IO.File.ReadAllBytes(reference));
+                            var assembly_ = Assembly.Load(System.IO.File.ReadAllBytes(reference));
+                            foreach (var m in assembly_.Modules)
+                            {
+                                IEnumerable<Module> modules = this.GetType().Assembly.Modules;
+                                if (!modules.Contains(m)) modules.AddItem(m);
+                            }
                             Monitor.Log($"Load {fileInfo.Name} OK", LogLevel.Alert);
                         }
                         catch (Exception ex)
@@ -143,7 +149,6 @@ namespace XNBArchive
                                 {
                                     ContentCompiler contentCompiler = new ContentCompiler();
                                     contentCompiler.Compile(stream, obj, TargetPlatform, GraphicsProfile.HiDef, false, "", "");
-                                    stream.Close();
                                 }
                                 Log($"Successfully packaged the {dir + AltDirectorySeparatorChar + fileInfo.Name} file", LogLevel.Info);
                             }
@@ -166,9 +171,7 @@ namespace XNBArchive
                 {
 
                     Log($"Packing the {dir + AltDirectorySeparatorChar + fileInfo.Name} file failed", LogLevel.Error);
-#if DEBUG
                     Log($"{e.GetBaseException()}", LogLevel.Error);
-#endif
                 }
             }
             IsPacking = false;
