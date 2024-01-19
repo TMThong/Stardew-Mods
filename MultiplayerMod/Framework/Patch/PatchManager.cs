@@ -29,7 +29,6 @@ namespace MultiplayerMod.Framework.Patch
             if (Constants.TargetPlatform == GamePlatform.Android)
             {
                 Patches.Add(new TitleMenuPatch());
-                Patches.Add(new DebrisPatch());
                 Patches.Add(new Game1Patch());
                 Patches.Add(new IClickableMenuPatch());
                 Patches.Add(new MobileCustomizerPatch());
@@ -44,9 +43,8 @@ namespace MultiplayerMod.Framework.Patch
             else
             {
                 Patches.Add(new CoopMenuPatch());
-                Patches.Add(new FarmerPatch());
             }
-
+            Patches.Add(new FarmerPatch());
         }
         public void Apply()
         {

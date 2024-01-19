@@ -25,6 +25,8 @@ namespace XNBArchive
 
         internal ContentManager Content;
 
+        private readonly TextureImporter TextureImporter = new TextureImporter();
+
         public override void Entry(IModHelper helper)
         {
             config = helper.ReadConfig<Config>();
@@ -41,10 +43,11 @@ namespace XNBArchive
                         try
                         {
                             Assembly.Load(System.IO.File.ReadAllBytes(reference));
+                            Monitor.Log($"Load {fileInfo.Name} OK", LogLevel.Alert);
                         }
-                        catch
+                        catch (Exception ex)
                         {
-
+                            this.Monitor.Log("" + ex.GetBaseException(), LogLevel.Error);
                         }
                     }
                 }
@@ -273,12 +276,7 @@ namespace XNBArchive
 
         private void Log(string v, LogLevel error)
         {
-            if (Constants.TargetPlatform == GamePlatform.Android)
-            {
-                new Thread(() => { Log(v, error); }) { IsBackground = true }.Start();
-                return;
-            }
-            Log(v, error);
+            Monitor.Log(v, error);
         }
     }
 }
