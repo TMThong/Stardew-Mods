@@ -12,14 +12,12 @@ namespace ThongUICore.Framework.Menu
 {
     public class BaseMenu : IClickableMenu
     {
-        public BaseMenu()
-        {
 
-        }
+        public string MenuId { get; set; }
 
-        public BaseMenu(int x, int y, int width, int height, bool showUpperRightCloseButton = false) : base(x, y, width, height, showUpperRightCloseButton)
-        {
-        }
+        
+
+
 
         public override void applyMovementKey(int direction)
         {

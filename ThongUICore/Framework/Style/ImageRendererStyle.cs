@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ThongUICore.Framework.API
+namespace ThongUICore.Framework.Style
 {
-    internal class MenuManager
+    public enum ImageRendererStyle : BaseStyle
     {
-
     }
 }

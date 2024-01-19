@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace ThongUICore.Framework.Element
 {
-    internal class Option
+    internal class Option : BaseElement
     {
+        public Option()
+        {
+        }
     }
 }

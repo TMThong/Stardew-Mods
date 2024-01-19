@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework.Input;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
+using ThongUICore.Framework.Manager;
 
 namespace ThongUICore
 {
@@ -12,6 +13,8 @@ namespace ThongUICore
         public override void Entry(IModHelper helper)
         {
             config = helper.ReadConfig<Config>();
+            ThongUIManager.ModHelper = helper;
+            ThongUIManager.Monitor = this.Monitor;
         }
     }
 }

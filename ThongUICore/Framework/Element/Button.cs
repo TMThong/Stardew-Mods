@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace ThongUICore.Framework.Element
 {
-    internal class Button
+    internal class Button : BaseElement
     {
+        private Action OnClick;
     }
 }

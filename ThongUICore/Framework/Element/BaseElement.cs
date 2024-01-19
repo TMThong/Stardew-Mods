@@ -8,22 +8,39 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using StardewValley.Menus;
+using ThongUICore.Framework.Manager;
+using ThongUICore.Framework.Renderer;
+
 namespace ThongUICore.Framework.Element
 {
     [DebuggerDisplay("{" + nameof(GetDebuggerDisplay) + "(),nq}")]
     public abstract class BaseElement : OptionsElement
     {
-        public BaseElement(string label) : base(label)
+
+        public virtual int Height { get; protected set; }
+        public virtual int Width { get; protected set; }
+
+        public int WhichOptionId { get; }
+
+        public bool IsGameOptionId { get; protected set; } = false;
+
+        public BaseRenderer Background;
+
+        public BaseElement() : base(string.Empty)
         {
         }
 
-        public BaseElement(string label, Rectangle bounds, int whichOption) : base(label, bounds, whichOption)
+        public BaseElement(int whichOptionId, string menuid, bool isGameOptionId = false) : this()
         {
+            WhichOptionId = whichOptionId;
+            IsGameOptionId = isGameOptionId;
+            if (!IsGameOptionId)
+            {
+                ThongUIManager.MenuManager.CreateWhichOptionId(menuid);
+            }
         }
 
-        public BaseElement(string label, int x, int y, int width, int height, int whichOption = -1) : base(label, x, y, width, height, whichOption)
-        {
-        }
+
 
         public override void draw(SpriteBatch b, int slotX, int slotY, IClickableMenu context = null)
         {
