@@ -1,0 +1,10 @@
+﻿{
+  "Name": "ThongUICore",
+  "Author": "ModAuthor",
+  "Version": "1.0.0",
+  "Description": "Mod Template",
+  "UniqueID": "ModAuthor.ThongUICore",
+  "EntryDll": "ThongUICore.dll",
+  "MinimumApiVersion": "2.11",
+  "UpdateKeys": [ "Nexus:" ]
+}

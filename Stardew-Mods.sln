@@ -20,7 +20,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "xTilePipeline", "xTilePipel
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AndroidPatcher", "AndroidPatcher\AndroidPatcher.csproj", "{D48CA030-6470-4882-8D9A-11ED2F874B5B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NoWarpDelay", "NoWarpDelay\NoWarpDelay.csproj", "{263604B4-3601-4139-846F-08E5E7166C2C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NoWarpDelay", "NoWarpDelay\NoWarpDelay.csproj", "{263604B4-3601-4139-846F-08E5E7166C2C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThongUICore", "ThongUICore\ThongUICore.csproj", "{D4A753A1-D8D7-4D97-AA68-1FC511DF1CF3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -86,6 +88,14 @@ Global
 		{263604B4-3601-4139-846F-08E5E7166C2C}.Release|Any CPU.Build.0 = Release|x86
 		{263604B4-3601-4139-846F-08E5E7166C2C}.Release|x86.ActiveCfg = Release|x86
 		{263604B4-3601-4139-846F-08E5E7166C2C}.Release|x86.Build.0 = Release|x86
+		{D4A753A1-D8D7-4D97-AA68-1FC511DF1CF3}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{D4A753A1-D8D7-4D97-AA68-1FC511DF1CF3}.Debug|Any CPU.Build.0 = Debug|x86
+		{D4A753A1-D8D7-4D97-AA68-1FC511DF1CF3}.Debug|x86.ActiveCfg = Debug|x86
+		{D4A753A1-D8D7-4D97-AA68-1FC511DF1CF3}.Debug|x86.Build.0 = Debug|x86
+		{D4A753A1-D8D7-4D97-AA68-1FC511DF1CF3}.Release|Any CPU.ActiveCfg = Release|x86
+		{D4A753A1-D8D7-4D97-AA68-1FC511DF1CF3}.Release|Any CPU.Build.0 = Release|x86
+		{D4A753A1-D8D7-4D97-AA68-1FC511DF1CF3}.Release|x86.ActiveCfg = Release|x86
+		{D4A753A1-D8D7-4D97-AA68-1FC511DF1CF3}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
