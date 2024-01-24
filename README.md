@@ -69,7 +69,7 @@ This mod is compatible with Stardew Valley 1.5.
 * **3. How to configure Mod?**
    - On PC platforms: Press the (Default Mod configuration) key to call up the configuration menu.
    - On mobile platforms: Press the volume up (Default Mod configuration) key to call up the Mod configuration menu.
-   ![Configure Mod Image](https://i.ibb.co/PmcPvKV/181114945-920131905446421-3501593669177748089-n.png)
+    ![Configure Mod Image](https://i.ibb.co/PmcPvKV/181114945-920131905446421-3501593669177748089-n.png)
 
 [YouTube Video](https://www.youtube.com/watch?v=iSiNbxpSMU8)
 
