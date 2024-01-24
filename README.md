@@ -7,8 +7,8 @@
 + [MultiplayerMod](#multiplayermod)
 + [XNBArchive](#xnbarchive)
 + [NoWarpDelay](#nowarpdelay)
-+ [Mini Tool NPC Mod](mini-tool-npc-mod)
-+ [Find Object Mod](find-object-mod)
++ [Mini Tool NPC Mod](#mini-tool-npc-mod)
++ [Find Object Mod](#find-object-mod)
 # MultiplayerMod
 It is a Mod that makes it possible for players to play together
 ![CoopMenu](https://i.ibb.co/1mqvVn3/z4251397821183-21ffafe72030b6983f0f47cfd097bacb.jpg  "CoopMenu")
