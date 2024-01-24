@@ -64,12 +64,12 @@ This mod is compatible with Stardew Valley 1.5.
 * **2. How does the Mod work?**
    - On PC platforms: Turn on search mode (Mod configuration default enabled) and right-click (Mod configuration default).
    - On mobile platforms: Turn search mode on (Mod configuration default enabled), Turn Initiates Object Selection Mode For Mobile (Default is not enabled), and left-click on the object.
-   ![Mod Work Image](https://i.ibb.co/BrFXbbd/180798200-752453482111141-4463170577690218930-n.png)
+  > ![Mod Work Image](https://i.ibb.co/BrFXbbd/180798200-752453482111141-4463170577690218930-n.png)
 
 * **3. How to configure Mod?**
    - On PC platforms: Press the (Default Mod configuration) key to call up the configuration menu.
    - On mobile platforms: Press the volume up (Default Mod configuration) key to call up the Mod configuration menu.
-    ![Configure Mod Image](https://i.ibb.co/PmcPvKV/181114945-920131905446421-3501593669177748089-n.png)
+  > ![Configure Mod Image](https://i.ibb.co/PmcPvKV/181114945-920131905446421-3501593669177748089-n.png)
 
 [YouTube Video](https://www.youtube.com/watch?v=iSiNbxpSMU8)
 
