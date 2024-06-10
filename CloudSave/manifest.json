@@ -1,0 +1,10 @@
+﻿{
+  "Name": "CloudSave",
+  "Author": "ModAuthor",
+  "Version": "1.0.0",
+  "Description": "Mod Template",
+  "UniqueID": "ModAuthor.CloudSave",
+  "EntryDll": "CloudSave.dll",
+  "MinimumApiVersion": "2.11",
+  "UpdateKeys": [ "Nexus:" ]
+}
