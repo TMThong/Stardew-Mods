@@ -19,6 +19,7 @@ namespace StardewValleyMod.Shared.FastHarmony
             Manifest = manifest;
             Config = config;
             Harmony = new Harmony(Manifest.UniqueID);
+            Init();
         }
         public virtual void Apply()
         {

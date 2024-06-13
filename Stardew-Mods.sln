@@ -28,7 +28,7 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "StardewValleyMod.Shared", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ping", "Ping\Ping.csproj", "{E040919D-4BD4-4A95-BE9C-615DC9D67BD4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CloudSave", "CloudSave\CloudSave.csproj", "{794B4E1A-DEA3-4474-A199-A3EFCA049ECA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CloudSave", "CloudSave\CloudSave.csproj", "{794B4E1A-DEA3-4474-A199-A3EFCA049ECA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -126,6 +126,7 @@ Global
 		SolutionGuid = {39C4C2DB-CE02-43D5-ACAC-FB18EE425100}
 	EndGlobalSection
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		StardewValleyMod.Shared\StardewValleyMod.Shared.projitems*{794b4e1a-dea3-4474-a199-a3efca049eca}*SharedItemsImports = 5
 		StardewValleyMod.Shared\StardewValleyMod.Shared.projitems*{f93f4ec6-caa5-456a-afb3-7d3ce2aefa9e}*SharedItemsImports = 13
 	EndGlobalSection
 EndGlobal

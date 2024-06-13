@@ -1,9 +1,9 @@
 ﻿{
   "Name": "CloudSave",
-  "Author": "ModAuthor",
+  "Author": "Tran Minh Thong",
   "Version": "1.0.0",
   "Description": "Mod Template",
-  "UniqueID": "ModAuthor.CloudSave",
+  "UniqueID": "thong.cloud.save",
   "EntryDll": "CloudSave.dll",
   "MinimumApiVersion": "2.11",
   "UpdateKeys": [ "Nexus:" ]

@@ -1,14 +1,10 @@
 ﻿using StardewModdingAPI;
+using System.Collections.Generic;
 
 namespace CloudSave
 {
     internal class Config
     {
-        public SButton debugKey { get; set; }
-
-        public Config()
-        {
-            debugKey = SButton.J;
-        }
+        public List<string> SiteAPI = new List<string>();
     }
 }

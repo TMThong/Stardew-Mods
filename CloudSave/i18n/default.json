@@ -1,4 +1,4 @@
 ﻿{
-  "template.start": "Started {{mod}} from folder: {{folder}}",
-  "template.key": "Debug Key pressed"
+    "download.save.file.button": "Download your file save.",
+    "upload.save.file.button" :  "Upload your save file to Cloud"
 }
