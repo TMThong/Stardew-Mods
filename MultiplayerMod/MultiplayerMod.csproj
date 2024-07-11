@@ -1,5 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
 	<PropertyGroup>
 		<AssemblyName>MultiplayerMod</AssemblyName>
 		<RootNamespace>MultiplayerMod</RootNamespace>
@@ -10,11 +9,9 @@
 		<EnableHarmony>true</EnableHarmony>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 	</PropertyGroup>
-
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
 		<Optimize>True</Optimize>
 	</PropertyGroup>
-
 	<ItemGroup>
 		<PackageReference Include="Pathoschild.Stardew.ModBuildConfig" Version="4.1.0" />
 		<PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
@@ -22,6 +19,9 @@
 	<ItemGroup>
 		<Reference Include="0Harmony">
 			<HintPath>..\..\..\..\..\..\..\GOG Games\Stardew Valley\smapi-internal\0Harmony.dll</HintPath>
+		</Reference>
+		<Reference Include="Lidgren.Network">
+			<HintPath>..\..\..\..\..\..\..\GOG Games\Stardew Valley\Lidgren.Network.dll</HintPath>
 		</Reference>
 		<Reference Include="Mono.Cecil">
 			<HintPath>..\..\..\..\..\..\..\GOG Games\Stardew Valley\smapi-internal\Mono.Cecil.dll</HintPath>
@@ -35,8 +35,10 @@
 		<Reference Include="MonoMod.Common">
 			<HintPath>..\..\..\..\..\..\..\GOG Games\Stardew Valley\smapi-internal\MonoMod.Common.dll</HintPath>
 		</Reference>
-		<Reference Include="Lidgren.Network">
-			<HintPath>..\..\..\..\..\..\..\GOG Games\Stardew Valley\Lidgren.Network.dll</HintPath>
-		</Reference>
+	</ItemGroup>
+	<ItemGroup>
+		<None Update="..\..\..\..\..\..\..\GOG Games\Stardew Valley\Lidgren.Network.dll">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
 	</ItemGroup>
 </Project>
