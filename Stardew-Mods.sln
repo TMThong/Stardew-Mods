@@ -126,6 +126,7 @@ Global
 		SolutionGuid = {39C4C2DB-CE02-43D5-ACAC-FB18EE425100}
 	EndGlobalSection
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		StardewValleyMod.Shared\StardewValleyMod.Shared.projitems*{027b1574-f421-4b60-889b-5a28519821ce}*SharedItemsImports = 5
 		StardewValleyMod.Shared\StardewValleyMod.Shared.projitems*{794b4e1a-dea3-4474-a199-a3efca049eca}*SharedItemsImports = 5
 		StardewValleyMod.Shared\StardewValleyMod.Shared.projitems*{f93f4ec6-caa5-456a-afb3-7d3ce2aefa9e}*SharedItemsImports = 13
 	EndGlobalSection

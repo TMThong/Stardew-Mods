@@ -17,6 +17,11 @@ namespace MultiplayerMod.Framework.Patch
     {
         public PatchManager(IModHelper helper, IManifest manifest, Config config) : base(helper, manifest, config) 
         {
+            
+        }
+
+        public override void Init()
+        {
             if (Constants.TargetPlatform == GamePlatform.Android)
             {
                 Patches.Add(new TitleMenuPatch());
@@ -30,21 +35,13 @@ namespace MultiplayerMod.Framework.Patch
                 Patches.Add(new GameServerPatch());
                 Patches.Add(new CarpenterMenuPatch());
                 Patches.Add(new ShippingMenuPatch());
+                Patches.Add(new DialogueBoxPatch());
             }
             else
             {
                 Patches.Add(new CoopMenuPatch());
             }
             Patches.Add(new FarmerPatch());
-        }
-        public void Apply()
-        {
-            foreach (var patch in Patches)
-            {
-                var p = patch;
-                p.Apply(Harmony);
-                ModUtilities.ModMonitor.Log($"Patch {p.GetType().Name} done...", LogLevel.Alert);
-            }
         }
     }
 }
