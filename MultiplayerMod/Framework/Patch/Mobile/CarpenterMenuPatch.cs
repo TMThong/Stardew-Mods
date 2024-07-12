@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using StardewValley;
 using StardewValley.Menus;
+using StardewValleyMod.Shared.FastHarmony;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,11 +12,12 @@ namespace MultiplayerMod.Framework.Patch.Mobile
 {
     internal class CarpenterMenuPatch : IPatch
     {
-        private readonly Type PATCH_TYPE = typeof(CarpenterMenu);
+
+        public Type TypePatch => typeof(CarpenterMenu);
 
         public void Apply(Harmony harmony)
         {
-            harmony.Patch(AccessTools.Constructor(PATCH_TYPE, new Type[] { typeof(bool) }), postfix: new HarmonyMethod(this.GetType(), nameof(postfix_ctor)));
+            harmony.Patch(AccessTools.Constructor(TypePatch, new Type[] { typeof(bool) }), postfix: new HarmonyMethod(this.GetType(), nameof(postfix_ctor)));
         }
 
         private static void postfix_ctor(CarpenterMenu __instance)

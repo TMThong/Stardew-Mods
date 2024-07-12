@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Input;
 using StardewModdingAPI;
 using StardewValley;
 using StardewValley.Menus;
+using StardewValleyMod.Shared.FastHarmony;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,15 +15,14 @@ namespace MultiplayerMod.Framework.Patch.Mobile
 {
     public class Game1Patch : IPatch
     {
-        public static readonly Type PATCH_TYPE = typeof(Game1);
         public static IReflectedField<int> xEdgeField;
         public static IReflectedField<string> savesPathField;
         public static IReflectedField<Texture2D> mobileSpriteSheetField;
         public Game1Patch()
         {
-            xEdgeField = ModUtilities.Helper.Reflection.GetField<int>(PATCH_TYPE, "xEdge");
-            savesPathField = ModUtilities.Helper.Reflection.GetField<string>(PATCH_TYPE, "savesPath");
-            mobileSpriteSheetField = ModUtilities.Helper.Reflection.GetField<Texture2D>(PATCH_TYPE, "mobileSpriteSheet");
+            xEdgeField = ModUtilities.Helper.Reflection.GetField<int>(TypePatch, "xEdge");
+            savesPathField = ModUtilities.Helper.Reflection.GetField<string>(TypePatch, "savesPath");
+            mobileSpriteSheetField = ModUtilities.Helper.Reflection.GetField<Texture2D>(TypePatch, "mobileSpriteSheet");
         }
 
 
@@ -57,6 +57,8 @@ namespace MultiplayerMod.Framework.Patch.Mobile
                 savesPathField.SetValue(value);
             }
         }
+
+        public Type TypePatch => typeof(Game1);
 
         public void Apply(Harmony harmony)
         {

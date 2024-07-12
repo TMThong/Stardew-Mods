@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using StardewValley;
+using StardewValleyMod.Shared.FastHarmony;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -12,7 +13,9 @@ namespace MultiplayerMod.Framework.Patch.Mobile
     [DebuggerDisplay("{" + nameof(GetDebuggerDisplay) + "(),nq}")]
     internal class SaveGamePatch : IPatch
     {
-        public readonly Type PATCH_TYPE = typeof(SaveGame);
+
+        public Type TypePatch => typeof(SaveGame);
+
         public SaveGamePatch() { }
 
         public static void deleteEmergencySaveIfCalled(object obj)
@@ -38,7 +41,7 @@ namespace MultiplayerMod.Framework.Patch.Mobile
 
         public void Apply(Harmony harmony)
         {
-            harmony.Patch(AccessTools.Method(PATCH_TYPE, "getLoadEnumerator"), postfix: new HarmonyMethod(this.GetType() , nameof(postfix_getLoadEnumerator)));
+            harmony.Patch(AccessTools.Method(TypePatch, "getLoadEnumerator"), postfix: new HarmonyMethod(this.GetType() , nameof(postfix_getLoadEnumerator)));
         }
 
         private string GetDebuggerDisplay()

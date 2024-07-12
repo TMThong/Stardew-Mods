@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using HarmonyLib;
 using MultiplayerMod.Framework.Network;
 using StardewValley.Network;
+using StardewValleyMod.Shared.FastHarmony;
 using LidgrenServer = MultiplayerMod.Framework.Network.LidgrenServer;
 
 namespace MultiplayerMod.Framework.Patch
@@ -15,10 +16,11 @@ namespace MultiplayerMod.Framework.Patch
     [DebuggerDisplay("{" + nameof(GetDebuggerDisplay) + "(),nq}")]
     internal class GameServerPatch : IPatch
     {
-        private readonly Type PatchType = typeof(GameServer);
+        public Type TypePatch => typeof(GameServer);
+
         public void Apply(Harmony harmonyInstance)
         {
-            harmonyInstance.Patch(AccessTools.Constructor(PatchType, new Type[] { typeof(bool) }), postfix: new HarmonyMethod(AccessTools.Method(this.GetType(), nameof(Postfix_contruction))));
+            harmonyInstance.Patch(AccessTools.Constructor(TypePatch, new Type[] { typeof(bool) }), postfix: new HarmonyMethod(AccessTools.Method(this.GetType(), nameof(Postfix_contruction))));
         }
         private static void Postfix_contruction(GameServer __instance)
         {

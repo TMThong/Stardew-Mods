@@ -19,6 +19,7 @@ using xTile.Layers;
 using xTile.Tiles;
 using System.Reflection;
 using System.Diagnostics;
+using StardewValleyMod.Shared.FastHarmony;
 
 namespace MultiplayerMod.Framework.Patch.Mobile
 {
@@ -28,10 +29,12 @@ namespace MultiplayerMod.Framework.Patch.Mobile
     [DebuggerDisplay("{" + nameof(GetDebuggerDisplay) + "(),nq}")]
     internal class SGamePatch : Game1, IPatch
     {
-        public Type PATCH_TYPE { get; }
+
+        public Type TypePatch { get; }
+
         public SGamePatch()
         {
-            PATCH_TYPE = typeof(IModHelper).Assembly.GetType("StardewModdingAPI.Framework.SGame");
+            TypePatch = typeof(IModHelper).Assembly.GetType("StardewModdingAPI.Framework.SGame");
         }
 
         public void Apply(Harmony harmony)

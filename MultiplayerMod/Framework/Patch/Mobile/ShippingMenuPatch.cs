@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using StardewValley;
 using StardewValley.Menus;
+using StardewValleyMod.Shared.FastHarmony;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,15 +13,15 @@ namespace MultiplayerMod.Framework.Patch.Mobile
 {
     internal class ShippingMenuPatch : IPatch
     {
-        private readonly static Type TYPE_PATCH = typeof(ShippingMenu);
 
         private readonly static Dictionary<ShippingMenu, bool> ShippingMenu_activated = new Dictionary<ShippingMenu, bool>();
 
+        public Type TypePatch => typeof(ShippingMenu);
 
         public void Apply(Harmony harmony)
         {
-            harmony.Patch(AccessTools.Constructor(TYPE_PATCH, new Type[] { typeof(IList<Item>) }), new HarmonyMethod(this.GetType(), nameof(postfix_ctor)));
-            harmony.Patch(AccessTools.Method(TYPE_PATCH, "update", new Type[] { typeof(GameTime) }), prefix: new HarmonyMethod(this.GetType(), nameof(prefix_update)));
+            harmony.Patch(AccessTools.Constructor(TypePatch, new Type[] { typeof(IList<Item>) }), new HarmonyMethod(this.GetType(), nameof(postfix_ctor)));
+            harmony.Patch(AccessTools.Method(TypePatch, "update", new Type[] { typeof(GameTime) }), prefix: new HarmonyMethod(this.GetType(), nameof(prefix_update)));
         }
 
         private static void postfix_ctor(IList<Item> items, ShippingMenu __instance)

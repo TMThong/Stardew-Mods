@@ -4,6 +4,7 @@ using StardewModdingAPI;
 using StardewValley;
 using StardewValley.Network;
 using StardewValley.SDKs;
+using StardewValleyMod.Shared.FastHarmony;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -16,11 +17,12 @@ namespace MultiplayerMod.Framework.Patch.Mobile
     [DebuggerDisplay("{" + nameof(GetDebuggerDisplay) + "(),nq}")]
     internal class SMultiplayerPatch : IPatch
     {
-        private readonly Type PATCH_TYPE = typeof(IMultiplayerPeer).Assembly.GetType("StardewModdingAPI.Framework.SMultiplayer");
+        public Type TypePatch => typeof(IMultiplayerPeer).Assembly.GetType("StardewModdingAPI.Framework.SMultiplayer");
+
         public void Apply(Harmony harmony)
         {
-            harmony.Patch(AccessTools.Method(PATCH_TYPE, "InitClient"), prefix: new HarmonyMethod(this.GetType(), nameof(prefix_InitClient)));
-            harmony.Patch(AccessTools.Method(PATCH_TYPE, "InitServer"), prefix: new HarmonyMethod(this.GetType(), nameof(prefix_InitServer)));
+            harmony.Patch(AccessTools.Method(TypePatch, "InitClient"), prefix: new HarmonyMethod(this.GetType(), nameof(prefix_InitClient)));
+            harmony.Patch(AccessTools.Method(TypePatch, "InitServer"), prefix: new HarmonyMethod(this.GetType(), nameof(prefix_InitServer)));
         }
         public static bool prefix_InitClient(Client client, ref Client __result, Multiplayer __instance)
         {

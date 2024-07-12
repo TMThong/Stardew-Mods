@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using StardewValley;
 using StardewValley.Menus;
 using StardewValley.Minigames;
+using StardewValleyMod.Shared.FastHarmony;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -14,16 +15,17 @@ namespace MultiplayerMod.Framework.Patch.Mobile
     [DebuggerDisplay("{" + nameof(GetDebuggerDisplay) + "(),nq}")]
     internal class MobileFarmChooserPatch : IPatch
     {
-        public Type PATCH_TYPE { get; }
+        
+        public Type TypePatch { get; }
 
         public MobileFarmChooserPatch()
         {
-            PATCH_TYPE = typeof(IClickableMenu).Assembly.GetType("StardewValley.Menus.MobileFarmChooser");
+            TypePatch = typeof(IClickableMenu).Assembly.GetType("StardewValley.Menus.MobileFarmChooser");
         }
 
         public void Apply(Harmony harmony)
         {
-            harmony.Patch(AccessTools.Method(PATCH_TYPE, "optionButtonClick"), prefix: new HarmonyMethod(this.GetType(), nameof(prefix_optionButtonClick)));
+            harmony.Patch(AccessTools.Method(TypePatch, "optionButtonClick"), prefix: new HarmonyMethod(this.GetType(), nameof(prefix_optionButtonClick)));
         }
 
         private static bool prefix_optionButtonClick(object __instance, string name)

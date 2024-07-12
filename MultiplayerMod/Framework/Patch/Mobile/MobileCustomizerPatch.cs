@@ -2,27 +2,29 @@
 using HarmonyLib;
 using StardewValley;
 using StardewValley.Menus;
+using StardewValleyMod.Shared.FastHarmony;
 using System;
 
 namespace MultiplayerMod.Framework.Patch.Mobile
 {
     internal class MobileCustomizerPatch : IPatch
     {
-        public Type PATCH_TYPE { get; }
 
         public MobileCustomizerPatch()
         {
-            PATCH_TYPE = typeof(IClickableMenu).Assembly.GetType("StardewValley.Menus.MobileCustomizer");
+            TypePatch = typeof(IClickableMenu).Assembly.GetType("StardewValley.Menus.MobileCustomizer");
         }
 
         public void Apply(Harmony harmony)
         {
-            harmony.Patch(AccessTools.Method(PATCH_TYPE, "receiveLeftClick", new Type[] { typeof(int), typeof(int), typeof(bool) }), postfix: new HarmonyMethod(this.GetType(), nameof(postfix_receiveLeftClick)));
-            harmony.Patch(AccessTools.Method(PATCH_TYPE, "optionButtonClick", new Type[] { typeof(string) }), postfix: new HarmonyMethod(this.GetType(), nameof(postfix_optionButtonClick)));
-            harmony.Patch(AccessTools.Constructor(PATCH_TYPE), postfix: new HarmonyMethod(this.GetType(), nameof(postfix_ctor)));
+            harmony.Patch(AccessTools.Method(TypePatch, "receiveLeftClick", new Type[] { typeof(int), typeof(int), typeof(bool) }), postfix: new HarmonyMethod(this.GetType(), nameof(postfix_receiveLeftClick)));
+            harmony.Patch(AccessTools.Method(TypePatch, "optionButtonClick", new Type[] { typeof(string) }), postfix: new HarmonyMethod(this.GetType(), nameof(postfix_optionButtonClick)));
+            harmony.Patch(AccessTools.Constructor(TypePatch), postfix: new HarmonyMethod(this.GetType(), nameof(postfix_ctor)));
         }
 
         public static bool skipIntro { get; internal set; } = false;
+
+        public Type TypePatch { get; }
 
         private static void postfix_receiveLeftClick(object __instance, int x, int y, bool playSound = true)
         {

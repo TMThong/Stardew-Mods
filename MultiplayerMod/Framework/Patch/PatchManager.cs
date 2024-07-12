@@ -9,23 +9,14 @@ using MultiplayerMod;
 using HarmonyLib;
 using MultiplayerMod.Framework.Patch.Mobile;
 using MultiplayerMod.Framework.Patch.Desktop;
+using StardewValleyMod.Shared.FastHarmony;
 
 namespace MultiplayerMod.Framework.Patch
 {
-    internal class PatchManager
+    internal class PatchManager : AbstractPatchManager<Config>
     {
-        public IModHelper Helper { get; set; }
-        public IManifest Manifest { get; set; }
-        public Config Config { get; set; }
-        public List<IPatch> Patches { get; set; } = new List<IPatch>();
-        public Harmony Harmony { get; }
-        public PatchManager(IModHelper helper, IManifest manifest, Config config)
+        public PatchManager(IModHelper helper, IManifest manifest, Config config) : base(helper, manifest, config) 
         {
-            Helper = helper;
-            Manifest = manifest;
-            Config = config;
-            Harmony = new Harmony(Manifest.UniqueID);
-
             if (Constants.TargetPlatform == GamePlatform.Android)
             {
                 Patches.Add(new TitleMenuPatch());

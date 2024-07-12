@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using StardewValley;
 using StardewValley.Menus;
+using StardewValleyMod.Shared.FastHarmony;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,10 +13,12 @@ namespace MultiplayerMod.Framework.Patch.Mobile
 {
     internal class GameLocationPatch : IPatch
     {
-        private static readonly Type PATCH_TYPE = typeof(GameLocation);
+
+        public Type TypePatch => typeof(GameLocation);
+
         public void Apply(Harmony harmony)
         {
-            harmony.Patch(AccessTools.PropertyGetter(PATCH_TYPE, "tapToMove"), postfix: new HarmonyMethod(this.GetType(), nameof(postfix_get_tapToMove)));
+            harmony.Patch(AccessTools.PropertyGetter(TypePatch, "tapToMove"), postfix: new HarmonyMethod(this.GetType(), nameof(postfix_get_tapToMove)));
         }
         private static void postfix_get_tapToMove(GameLocation __instance, ref object __result)
         {

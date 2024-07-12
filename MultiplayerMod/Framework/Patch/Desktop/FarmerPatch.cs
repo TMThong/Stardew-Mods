@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using StardewValley;
 using StardewValley.Menus;
+using StardewValleyMod.Shared.FastHarmony;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,13 +12,12 @@ namespace MultiplayerMod.Framework.Patch.Desktop
 {
     internal class FarmerPatch : IPatch
     {
-
-        private static readonly Type TYPE_PATCH = typeof(Farmer);
+        public Type TypePatch => typeof(Farmer);
 
         public void Apply(Harmony harmony)
         {
-            harmony.Patch(AccessTools.PropertyGetter(TYPE_PATCH, "ActiveObject"), prefix: new HarmonyMethod(this.GetType(), nameof(prefix_ActiveObject)));
-            harmony.Patch(AccessTools.PropertyGetter(TYPE_PATCH, "CurrentItem"), prefix: new HarmonyMethod(this.GetType(), nameof(prefix_CurrentItem)));
+            harmony.Patch(AccessTools.PropertyGetter(TypePatch, "ActiveObject"), prefix: new HarmonyMethod(this.GetType(), nameof(prefix_ActiveObject)));
+            harmony.Patch(AccessTools.PropertyGetter(TypePatch, "CurrentItem"), prefix: new HarmonyMethod(this.GetType(), nameof(prefix_CurrentItem)));
         }
 
 

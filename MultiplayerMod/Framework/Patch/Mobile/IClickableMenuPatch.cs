@@ -9,6 +9,7 @@ using StardewValley.Menus;
 using HarmonyLib;
 using StardewModdingAPI;
 using StardewValley;
+using StardewValleyMod.Shared.FastHarmony;
 
 namespace MultiplayerMod.Framework.Patch.Mobile
 {
@@ -17,7 +18,7 @@ namespace MultiplayerMod.Framework.Patch.Mobile
         public static IReflectedField<Rectangle> lastTextureBoxRectField;
         public IClickableMenuPatch()
         {
-            lastTextureBoxRectField = ModUtilities.Helper.Reflection.GetField<Rectangle>(typeof(IClickableMenu), "lastTextureBoxRect");
+            lastTextureBoxRectField = ModUtilities.Helper.Reflection.GetField<Rectangle>(TypePatch, "lastTextureBoxRect");
         }
 
         public static xTile.Dimensions.Rectangle viewport
@@ -27,6 +28,8 @@ namespace MultiplayerMod.Framework.Patch.Mobile
                 return Game1.uiViewport;
             }
         }
+
+        public Type TypePatch => typeof(IClickableMenu);
 
         public static void drawTextureBox(SpriteBatch b, Texture2D texture, Microsoft.Xna.Framework.Rectangle sourceRect, int x, int y, int width, int height, Color color, float scale = 1f, bool drawShadow = true, float draw_layer = -1f, bool ignoreBorder = false)
         {

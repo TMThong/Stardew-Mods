@@ -3,6 +3,7 @@ using MultiplayerMod.Framework.Network;
 using StardewValley;
 using StardewValley.Menus;
 using StardewValley.Network;
+using StardewValleyMod.Shared.FastHarmony;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -18,12 +19,12 @@ namespace MultiplayerMod.Framework.Patch
 {
     internal class CoopMenuPatch : IPatch
     {
-        private static readonly Type PatchType = Assembly.GetAssembly(typeof(IClickableMenu)).GetType("StardewValley.Menus.CoopMenu");
 
+        public Type TypePatch => Assembly.GetAssembly(typeof(IClickableMenu)).GetType("StardewValley.Menus.CoopMenu");
 
         public void Apply(Harmony harmony)
         {
-            harmony.Patch(AccessTools.Method(PatchType, "connectionFinished"), postfix: new HarmonyMethod(AccessTools.Method(this.GetType(), nameof(postfix_connectionFinished))));
+            harmony.Patch(AccessTools.Method(TypePatch, "connectionFinished"), postfix: new HarmonyMethod(AccessTools.Method(this.GetType(), nameof(postfix_connectionFinished))));
             harmony.Patch(AccessTools.Method(Assembly.GetAssembly(typeof(IClickableMenu)).GetType("StardewValley.Menus.CoopMenu+LanSlot"), "Activate"), prefix: new HarmonyMethod(this.GetType(), nameof(prefix_Activate)));
         }
 

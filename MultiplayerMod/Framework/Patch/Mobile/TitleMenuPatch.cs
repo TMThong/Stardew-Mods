@@ -12,13 +12,13 @@ using Microsoft.Xna.Framework.Graphics;
 using StardewValley.Monsters;
 using MultiplayerMod.Framework.Mobile.Menus;
 using System.Diagnostics;
+using StardewValleyMod.Shared.FastHarmony;
 
 namespace MultiplayerMod.Framework.Patch.Mobile
 {
     [DebuggerDisplay("{" + nameof(GetDebuggerDisplay) + "(),nq}")]
     public class TitleMenuPatch : IPatch
     {
-        private readonly Type PATCH_TYPE = typeof(TitleMenu);
         private static IReflectedField<int> quitTimerField;
 
         public TitleMenuPatch()
@@ -28,20 +28,20 @@ namespace MultiplayerMod.Framework.Patch.Mobile
 
         public void Apply(Harmony harmony)
         {
-            harmony.Patch(AccessTools.Method(PATCH_TYPE, "setUpIcons", new Type[0], null), null, new HarmonyMethod(AccessTools.Method(base.GetType(), "Postfix_setUpIcons", null, null)), null);
+            harmony.Patch(AccessTools.Method(TypePatch, "setUpIcons", new Type[0], null), null, new HarmonyMethod(AccessTools.Method(base.GetType(), "Postfix_setUpIcons", null, null)), null);
             //harmony.Patch(AccessTools.Method(PATCH_TYPE, "ForceSubmenu"), postfix: new HarmonyMethod(GetType(), nameof(postfix_ForceSubmenu)));
-            harmony.Patch(AccessTools.Method(PATCH_TYPE, "update", new Type[]
+            harmony.Patch(AccessTools.Method(TypePatch, "update", new Type[]
             {
                 typeof(GameTime)
             }, null), postfix: new HarmonyMethod(AccessTools.Method(base.GetType(), "Postfix_update", null, null)));
-            harmony.Patch(AccessTools.Method(PATCH_TYPE, "receiveLeftClick", new Type[]
+            harmony.Patch(AccessTools.Method(TypePatch, "receiveLeftClick", new Type[]
             {
                 typeof(int),
                 typeof(int),
                 typeof(bool)
             }, null), new HarmonyMethod(AccessTools.Method(base.GetType(), "Postfix_receiveLeftClick", null, null)), null, null);
 
-            harmony.Patch(AccessTools.Method(PATCH_TYPE, "CloseSubMenu"), prefix: new HarmonyMethod(this.GetType(), nameof(prefix_CloseSubMenu)));
+            harmony.Patch(AccessTools.Method(TypePatch, "CloseSubMenu"), prefix: new HarmonyMethod(this.GetType(), nameof(prefix_CloseSubMenu)));
            // harmony.Patch(AccessTools.Method(PATCH_TYPE, "performButtonAction"), prefix: new HarmonyMethod(this.GetType(), nameof(prefix_performButtonAction)));
         }
 
@@ -227,6 +227,7 @@ namespace MultiplayerMod.Framework.Patch.Mobile
         }
         private static int showButtonsTimer = 333;
 
+        public Type TypePatch => typeof(TitleMenu);
 
         private static bool prefix_CloseSubMenu(TitleMenu __instance)
         {
