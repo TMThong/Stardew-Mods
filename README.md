@@ -1,7 +1,4 @@
 
-# Donate
-+ [PlayerDuo](https://playerduo.net/thongdev)
-+ [Patreon](https://www.patreon.com/thongdev)
 
 # List of Mods
 + [MultiplayerMod](#multiplayermod)
@@ -73,4 +70,7 @@ This mod is compatible with Stardew Valley 1.5.
   > ![Configure Mod Image](https://i.ibb.co/PmcPvKV/181114945-920131905446421-3501593669177748089-n.png)
 
 [YouTube Video](https://www.youtube.com/watch?v=iSiNbxpSMU8)
+# Donate
++ [PlayerDuo](https://playerduo.net/thongdev)
++ [Patreon](https://www.patreon.com/thongdev)
 
