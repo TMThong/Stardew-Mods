@@ -9,6 +9,8 @@ using MultiplayerMod.Framework;
 using System.Reflection;
 using Microsoft.Xna.Framework.Graphics;
 using StardewValley.Network;
+using StardewValley.Tools;
+using System.Text.RegularExpressions;
 
 namespace MultiplayerMod.Framework
 {
@@ -38,7 +40,27 @@ namespace MultiplayerMod.Framework
         public static IModHelper Helper;
         internal static Config ModConfig;
 
+        public const  string PATTERN_SIGNALR = @"(?<key>[^=;]+)=(?<value>[^;]+)";
 
+        public static bool TryMatchSignalR(string Text,out Dictionary<string, string> pairs)
+        {
+            pairs = new Dictionary<string, string>();
+
+            var matches = Regex.Matches(Text, PATTERN_SIGNALR);
+
+            if (matches.Count > 0)
+            {
+                foreach (Match match in matches)
+                {
+                    if (!match.Success) return false;
+                    string key = match.Groups["key"].Value;
+                    string value = match.Groups["value"].Value;
+                    pairs[key] = value;
+                }
+                return true;
+            }
+            else return false;
+        }
         #region Reflection
         public static T GetPrivatePropertyValue<T>(this object obj, string propName)
         {
