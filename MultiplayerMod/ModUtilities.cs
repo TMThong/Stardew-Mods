@@ -61,6 +61,8 @@ namespace MultiplayerMod.Framework
             }
             else return false;
         }
+
+        public static bool CheckInvaildKey(this Dictionary<string, string> pairs, params string[] keys) => pairs.Keys.Any(key => !keys.Contains(key));
         #region Reflection
         public static T GetPrivatePropertyValue<T>(this object obj, string propName)
         {
