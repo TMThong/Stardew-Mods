@@ -1,4 +1,9 @@
 {
   "client.join": "Tham gia bằng mod nhiều người chơi",
-  "signalR.match.fail": "Văn bản không đúng định dạng."
+  "signalR.match.fail": "Văn bản không đúng định dạng.",
+  "signalR.client.join": "Tham gia bằng kết nối SignalR",
+  "signalR.incorrect.room": "RoomId sai",
+  "signalR.host.setup": "Gán thông tin phòng bằng SignalR",
+  "signalR.host.incorrect.private.key": "Mã khoá riêng tư của chủ phòng bị sai",
+  "error.network": "Lỗi mạng, vui lòng kiểm tra lại kết nối của bạn.",
 }

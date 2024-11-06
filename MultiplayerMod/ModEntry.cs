@@ -7,7 +7,6 @@ using System.Reflection;
 using System;
 using MultiplayerMod.Framework.Command;
 using StardewValley.Menus;
-using MultiplayerMod.Framework.Mobile.Menus;
 using StardewValley.Monsters;
 using System.IO;
 using StardewValley;
@@ -16,7 +15,6 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework.Graphics;
 using StardewValley.Network;
 using MultiplayerMod.Framework.Network;
-using MultiplayerMod.Framework.Mobile;
 using System.Threading;
 using Netcode;
 
