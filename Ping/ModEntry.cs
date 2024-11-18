@@ -9,8 +9,12 @@ namespace Ping
 {
     public class ModEntry : Mod
     {
+
+        public Config Config { get; set; }
+
         public override void Entry(IModHelper helper)
         {
+            this.Config = helper.ReadConfig<Config>();
             helper.Events.Display.RenderedHud += OnRenderedHud;
         }
 
