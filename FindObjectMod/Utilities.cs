@@ -231,7 +231,7 @@ namespace FindObjectMod
          
         public static bool isNpcCanFind(ModConfig config, NPC nPC)
         {
-            return config.FindCharacter[Utilities.SaveKey].Keys.ToList<string>().Any((string p) => p == nPC.name);
+            return config.FindCharacter[Utilities.SaveKey].Keys.ToList<string>().Any((string p) => p == nPC.Name);
         }
 
          

@@ -35,9 +35,12 @@ namespace MultiplayerMod.Framework.Network
             }
         }
 
+        public IGameServer gameServer { get; }
+
         public LidgrenServer(IGameServer gameServer)
             : base(gameServer)
         {
+            this.gameServer = gameServer;
         }
 
         public override bool isConnectionActive(string connectionID)
@@ -151,74 +154,7 @@ namespace MultiplayerMod.Framework.Network
 
         public override void receiveMessages()
         {
-            NetIncomingMessage inc;
-            while ((inc = server.ReadMessage()) != null)
-            {
-                if (bandwidthLogger != null)
-                {
-                    bandwidthLogger.RecordBytesDown(inc.LengthBytes);
-                }
-                switch (inc.MessageType)
-                {
-                    case NetIncomingMessageType.DiscoveryRequest:
-                        if ((Game1.options.ipConnectionsEnabled || gameServer.IsLocalMultiplayerInitiatedServer()) && (!gameServer.IsLocalMultiplayerInitiatedServer() || IsLocal(inc.SenderEndPoint.Address.ToString())) && !gameServer.isUserBanned(inc.SenderEndPoint.Address.ToString()))
-                        {
-                            sendVersionInfo(inc);
-                        }
-                        break;
-                    case NetIncomingMessageType.ConnectionApproval:
-                        if (Game1.options.ipConnectionsEnabled || gameServer.IsLocalMultiplayerInitiatedServer())
-                        {
-                            inc.SenderConnection.Approve();
-                        }
-                        else
-                        {
-                            inc.SenderConnection.Deny();
-                        }
-                        break;
-                    case NetIncomingMessageType.Data:
-                        parseDataMessageFromClient(inc);
-                        break;
-                    case NetIncomingMessageType.DebugMessage:
-                    case NetIncomingMessageType.WarningMessage:
-                    case NetIncomingMessageType.ErrorMessage:
-                        {
-                            string message = inc.ReadString();
-                            Console.WriteLine("{0}: {1}", inc.MessageType, message);
-                            Game1.debugOutput = message;
-                            break;
-                        }
-                    case NetIncomingMessageType.StatusChanged:
-                        statusChanged(inc);
-                        break;
-                    default:
-                        Game1.debugOutput = inc.ToString();
-                        break;
-                }
-                server.Recycle(inc);
-            }
-            foreach (NetConnection conn in server.Connections)
-            {
-                if (conn.Status == NetConnectionStatus.Connected && !introductionsSent.Contains(conn))
-                {
-                    if (!gameServer.whenGameAvailable(delegate
-                    {
-                        gameServer.sendAvailableFarmhands("", delegate (OutgoingMessage msg)
-                        {
-                            sendMessage(conn, msg);
-                        });
-                    }, () => Game1.gameMode != 6))
-                    {
-                        ModUtilities.ModMonitor.Log("Postponing introduction message", LogLevel.Warn);
-                        sendMessage(conn, new OutgoingMessage(11, Game1.player, "Strings\\UI:Client_WaitForHostLoad"));
-                    }
-                    introductionsSent.Add(conn);
-                }
-            }
-            if (bandwidthLogger != null)
-            {
-                bandwidthLogger.Update();
-            }
+            
         }
 
         private void sendVersionInfo(NetIncomingMessage message)

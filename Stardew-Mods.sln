@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MultiplayerMod", "Multiplay
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{5DCCFBAE-9FA2-4904-BADB-05D187BCAC02}"
 	ProjectSection(SolutionItems) = preProject
-		..\..\..\..\..\..\Tools\README.md = ..\..\..\..\..\..\Tools\README.md
+		..\..\..\..\..\Tools\README.md = ..\..\..\..\..\Tools\README.md
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MiniToolNPCMod", "MiniToolNPCMod\MiniToolNPCMod.csproj", "{957FBF59-174A-4D3F-9443-E4BCD0561CFD}"
@@ -18,17 +18,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XNBArchive", "XNBArchive\XN
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "xTilePipeline", "xTilePipeline\xTilePipeline.csproj", "{245BD7BA-67DE-44CF-8267-78A550235EE0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AndroidPatcher", "AndroidPatcher\AndroidPatcher.csproj", "{D48CA030-6470-4882-8D9A-11ED2F874B5B}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NoWarpDelay", "NoWarpDelay\NoWarpDelay.csproj", "{263604B4-3601-4139-846F-08E5E7166C2C}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ThongUICore", "ThongUICore\ThongUICore.csproj", "{D4A753A1-D8D7-4D97-AA68-1FC511DF1CF3}"
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "StardewValleyMod.Shared", "StardewValleyMod.Shared\StardewValleyMod.Shared.shproj", "{F93F4EC6-CAA5-456A-AFB3-7D3CE2AEFA9E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ping", "Ping\Ping.csproj", "{E040919D-4BD4-4A95-BE9C-615DC9D67BD4}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CloudSave", "CloudSave\CloudSave.csproj", "{794B4E1A-DEA3-4474-A199-A3EFCA049ECA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -78,14 +72,6 @@ Global
 		{245BD7BA-67DE-44CF-8267-78A550235EE0}.Release|Any CPU.Build.0 = Release|Any CPU
 		{245BD7BA-67DE-44CF-8267-78A550235EE0}.Release|x86.ActiveCfg = Release|Any CPU
 		{245BD7BA-67DE-44CF-8267-78A550235EE0}.Release|x86.Build.0 = Release|Any CPU
-		{D48CA030-6470-4882-8D9A-11ED2F874B5B}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{D48CA030-6470-4882-8D9A-11ED2F874B5B}.Debug|Any CPU.Build.0 = Debug|x86
-		{D48CA030-6470-4882-8D9A-11ED2F874B5B}.Debug|x86.ActiveCfg = Debug|x86
-		{D48CA030-6470-4882-8D9A-11ED2F874B5B}.Debug|x86.Build.0 = Debug|x86
-		{D48CA030-6470-4882-8D9A-11ED2F874B5B}.Release|Any CPU.ActiveCfg = Release|x86
-		{D48CA030-6470-4882-8D9A-11ED2F874B5B}.Release|Any CPU.Build.0 = Release|x86
-		{D48CA030-6470-4882-8D9A-11ED2F874B5B}.Release|x86.ActiveCfg = Release|x86
-		{D48CA030-6470-4882-8D9A-11ED2F874B5B}.Release|x86.Build.0 = Release|x86
 		{263604B4-3601-4139-846F-08E5E7166C2C}.Debug|Any CPU.ActiveCfg = Debug|x86
 		{263604B4-3601-4139-846F-08E5E7166C2C}.Debug|Any CPU.Build.0 = Debug|x86
 		{263604B4-3601-4139-846F-08E5E7166C2C}.Debug|x86.ActiveCfg = Debug|x86
@@ -94,14 +80,6 @@ Global
 		{263604B4-3601-4139-846F-08E5E7166C2C}.Release|Any CPU.Build.0 = Release|x86
 		{263604B4-3601-4139-846F-08E5E7166C2C}.Release|x86.ActiveCfg = Release|x86
 		{263604B4-3601-4139-846F-08E5E7166C2C}.Release|x86.Build.0 = Release|x86
-		{D4A753A1-D8D7-4D97-AA68-1FC511DF1CF3}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{D4A753A1-D8D7-4D97-AA68-1FC511DF1CF3}.Debug|Any CPU.Build.0 = Debug|x86
-		{D4A753A1-D8D7-4D97-AA68-1FC511DF1CF3}.Debug|x86.ActiveCfg = Debug|x86
-		{D4A753A1-D8D7-4D97-AA68-1FC511DF1CF3}.Debug|x86.Build.0 = Debug|x86
-		{D4A753A1-D8D7-4D97-AA68-1FC511DF1CF3}.Release|Any CPU.ActiveCfg = Release|x86
-		{D4A753A1-D8D7-4D97-AA68-1FC511DF1CF3}.Release|Any CPU.Build.0 = Release|x86
-		{D4A753A1-D8D7-4D97-AA68-1FC511DF1CF3}.Release|x86.ActiveCfg = Release|x86
-		{D4A753A1-D8D7-4D97-AA68-1FC511DF1CF3}.Release|x86.Build.0 = Release|x86
 		{E040919D-4BD4-4A95-BE9C-615DC9D67BD4}.Debug|Any CPU.ActiveCfg = Debug|x86
 		{E040919D-4BD4-4A95-BE9C-615DC9D67BD4}.Debug|Any CPU.Build.0 = Debug|x86
 		{E040919D-4BD4-4A95-BE9C-615DC9D67BD4}.Debug|x86.ActiveCfg = Debug|x86
@@ -110,14 +88,6 @@ Global
 		{E040919D-4BD4-4A95-BE9C-615DC9D67BD4}.Release|Any CPU.Build.0 = Release|x86
 		{E040919D-4BD4-4A95-BE9C-615DC9D67BD4}.Release|x86.ActiveCfg = Release|x86
 		{E040919D-4BD4-4A95-BE9C-615DC9D67BD4}.Release|x86.Build.0 = Release|x86
-		{794B4E1A-DEA3-4474-A199-A3EFCA049ECA}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{794B4E1A-DEA3-4474-A199-A3EFCA049ECA}.Debug|Any CPU.Build.0 = Debug|x86
-		{794B4E1A-DEA3-4474-A199-A3EFCA049ECA}.Debug|x86.ActiveCfg = Debug|x86
-		{794B4E1A-DEA3-4474-A199-A3EFCA049ECA}.Debug|x86.Build.0 = Debug|x86
-		{794B4E1A-DEA3-4474-A199-A3EFCA049ECA}.Release|Any CPU.ActiveCfg = Release|x86
-		{794B4E1A-DEA3-4474-A199-A3EFCA049ECA}.Release|Any CPU.Build.0 = Release|x86
-		{794B4E1A-DEA3-4474-A199-A3EFCA049ECA}.Release|x86.ActiveCfg = Release|x86
-		{794B4E1A-DEA3-4474-A199-A3EFCA049ECA}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -127,7 +97,6 @@ Global
 	EndGlobalSection
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		StardewValleyMod.Shared\StardewValleyMod.Shared.projitems*{027b1574-f421-4b60-889b-5a28519821ce}*SharedItemsImports = 5
-		StardewValleyMod.Shared\StardewValleyMod.Shared.projitems*{794b4e1a-dea3-4474-a199-a3efca049eca}*SharedItemsImports = 5
 		StardewValleyMod.Shared\StardewValleyMod.Shared.projitems*{f93f4ec6-caa5-456a-afb3-7d3ce2aefa9e}*SharedItemsImports = 13
 	EndGlobalSection
 EndGlobal

@@ -34,7 +34,7 @@ namespace MultiplayerMod.Framework.Patch.Desktop
                 return false;
             }
 
-            if (__instance.netItemStowed)
+            if (__instance.netItemStowed.Value)
             {
                 __result = null;
                 return false;
@@ -68,7 +68,7 @@ namespace MultiplayerMod.Framework.Patch.Desktop
                 return false;
             }
 
-            if (__instance.netItemStowed)
+            if (__instance.netItemStowed.Value)
             {
                 __result = null;
                 return false;

@@ -20,10 +20,10 @@ namespace FindObjectMod.Framework
         {
             this.Characters.ForEach(delegate (NPC p)
             {
-                bool flag = this.Config.FindCharacter[Utilities.SaveKey].ContainsKey(p.name);
+                bool flag = this.Config.FindCharacter[Utilities.SaveKey].ContainsKey(p.Name);
                 if (flag)
                 {
-                    this.drawLineNpc(b, this.Config.FindCharacter[Utilities.SaveKey][p.name], p);
+                    this.drawLineNpc(b, this.Config.FindCharacter[Utilities.SaveKey][p.Name], p);
                 }
                 else
                 {

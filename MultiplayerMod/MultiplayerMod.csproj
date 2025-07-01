@@ -3,7 +3,7 @@
 		<AssemblyName>MultiplayerMod</AssemblyName>
 		<RootNamespace>MultiplayerMod</RootNamespace>
 		<Version>1.0.0</Version>
-		<TargetFramework>net5.0</TargetFramework>
+		<TargetFramework>net6.0</TargetFramework>
 		<Platforms>x86</Platforms>
 		<PlatformTarget>x86</PlatformTarget>
 		<EnableHarmony>true</EnableHarmony>
@@ -13,34 +13,9 @@
 		<Optimize>True</Optimize>
 	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="8.0.10" />
-		<PackageReference Include="Pathoschild.Stardew.ModBuildConfig" Version="4.1.0" />
+		<PackageReference Include="Lidgren.Network" Version="1.0.2" />
+		<PackageReference Include="Pathoschild.Stardew.ModBuildConfig" Version="4.4.0" />
 		<PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
-	</ItemGroup>
-	<ItemGroup>
-		<Reference Include="0Harmony">
-			<HintPath>..\..\..\..\..\..\..\GOG Games\Stardew Valley\smapi-internal\0Harmony.dll</HintPath>
-		</Reference>
-		<Reference Include="Lidgren.Network">
-			<HintPath>..\..\..\..\..\..\..\GOG Games\Stardew Valley\Lidgren.Network.dll</HintPath>
-		</Reference>
-		<Reference Include="Mono.Cecil">
-			<HintPath>..\..\..\..\..\..\..\GOG Games\Stardew Valley\smapi-internal\Mono.Cecil.dll</HintPath>
-		</Reference>
-		<Reference Include="Mono.Cecil.Mdb">
-			<HintPath>..\..\..\..\..\..\..\GOG Games\Stardew Valley\smapi-internal\Mono.Cecil.Mdb.dll</HintPath>
-		</Reference>
-		<Reference Include="Mono.Cecil.Pdb">
-			<HintPath>..\..\..\..\..\..\..\GOG Games\Stardew Valley\smapi-internal\Mono.Cecil.Pdb.dll</HintPath>
-		</Reference>
-		<Reference Include="MonoMod.Common">
-			<HintPath>..\..\..\..\..\..\..\GOG Games\Stardew Valley\smapi-internal\MonoMod.Common.dll</HintPath>
-		</Reference>
-	</ItemGroup>
-	<ItemGroup>
-		<None Update="..\..\..\..\..\..\..\GOG Games\Stardew Valley\Lidgren.Network.dll">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
 	</ItemGroup>
 	<Import Project="..\StardewValleyMod.Shared\StardewValleyMod.Shared.projitems" Label="Shared" />
 </Project>

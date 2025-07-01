@@ -15,290 +15,232 @@ namespace FindObjectMod
 {
     public class ModEntry : Mod
     {
-        public List<ModTool> ModTools { get; } = new List<ModTool>();
+        public List<ModTool> ModTools { get; } = new();
         public ModConfig config;
         public static ModEntry Instance { get; internal set; }
+
         public override void Entry(IModHelper helper)
         {
-            bool isAndroid = Utilities.IsAndroid;
-            if (isAndroid)
+            if (Utilities.IsAndroid)
+                Monitor.Log("Mobile version may have errors!", LogLevel.Warn);
+
+            Instance = this;
+            config = helper.ReadConfig<ModConfig>();
+            var c = config;
+
+            helper.Events.Input.ButtonPressed += (o, e) =>
             {
-                base.Monitor.Log("Mobile version may have errors!", LogLevel.Warn);
-            }
-            ModEntry.Instance = this;
-            this.config = helper.ReadConfig<ModConfig>();
-            ModConfig c = this.config;
-            helper.Events.Input.ButtonPressed += delegate (object o, ButtonPressedEventArgs e)
-            {
-                bool flag = !Context.IsWorldReady || Game1.activeClickableMenu != null;
-                if (!flag)
+                if (!Context.IsWorldReady || Game1.activeClickableMenu != null)
+                    return;
+
+                if (e.Button == c.KeyOpenMenu)
                 {
-                    bool flag2 = e.Button == c.KeyOpenMenu;
-                    if (flag2)
+                    InitOptionsElement();
+                    Game1.activeClickableMenu = new ModMenu(helper, Monitor);
+                }
+                else if ((e.Button == c.KeySelectObject && !Utilities.IsAndroid && c.SearchMode) ||
+                         (Utilities.IsAndroid && c.InitiatesObjectSelectionModeForMobile && c.SearchMode))
+                {
+                    int x = (int)e.Cursor.ScreenPixels.X;
+                    int y = (int)e.Cursor.ScreenPixels.Y;
+                    var location = Game1.currentLocation;
+                    var objects_ = Utilities.GetObjects(location);
+                    if (Utilities.isClick(x, y, objects_))
                     {
-                        this.InitOptionsElement();
-                        Game1.activeClickableMenu = new ModMenu(helper, this.Monitor);
+                        var fi = objects_.FirstOrDefault(p => Utilities.isClick(x, y, p));
+                        if (fi != null)
+                            ObjectCliked(location, fi);
                     }
-                    bool flag3 = (e.Button == c.KeySelectObject && !Utilities.IsAndroid && c.SearchMode) || (Utilities.IsAndroid && c.InitiatesObjectSelectionModeForMobile && c.SearchMode);
-                    if (flag3)
+                    else if (Utilities.isClick(x, y, Utilities.GetNpcs(null).ToArray()))
                     {
-                        int x = (int)e.Cursor.ScreenPixels.X;
-                        int y = (int)e.Cursor.ScreenPixels.Y;
-                        GameLocation location = Game1.currentLocation;
-                        StardewValley.Object[] objects_ = Utilities.GetObjects(location);
-                        bool flag4 = Utilities.isClick(x, y, objects_);
-                        if (flag4)
-                        {
-                            StardewValley.Object fi = objects_.ToList<StardewValley.Object>().Find((StardewValley.Object p) => Utilities.isClick(x, y, p));
-                            this.ObjectCliked(location, fi);
-                        }
-                        else
-                        {
-                            bool flag5 = Utilities.isClick(x, y, Utilities.GetNpcs(null).ToArray());
-                            if (flag5)
-                            {
-                                NPC npc_ = Utilities.GetNpcs(null).Find((NPC p) => Utilities.isClick(x, y, p));
-                                this.NPCClicked(location, npc_);
-                            }
-                        }
+                        var npc_ = Utilities.GetNpcs(null).FirstOrDefault(p => Utilities.isClick(x, y, p));
+                        if (npc_ != null)
+                            NPCClicked(location, npc_);
                     }
                 }
             };
-            helper.Events.GameLoop.SaveLoaded += delegate (object o, SaveLoadedEventArgs e)
+
+            helper.Events.GameLoop.SaveLoaded += (o, e) =>
             {
                 Utilities.SaveKey = Constants.SaveFolderName;
-                bool flag = !c.ObjectToFind.ContainsKey(Utilities.SaveKey);
-                if (flag)
+                if (!c.ObjectToFind.ContainsKey(Utilities.SaveKey))
                 {
-                    c.ObjectToFind.Add(Utilities.SaveKey, new Dictionary<string, Color>());
-                    this.Helper.WriteConfig<ModConfig>(c);
+                    c.ObjectToFind[Utilities.SaveKey] = new Dictionary<string, Color>();
+                    Helper.WriteConfig(c);
                 }
-                bool flag2 = !c.FindCharacter.ContainsKey(Utilities.SaveKey);
-                if (flag2)
+                if (!c.FindCharacter.ContainsKey(Utilities.SaveKey))
                 {
-                    c.FindCharacter.Add(Utilities.SaveKey, new Dictionary<string, Color>());
-                    this.Helper.WriteConfig<ModConfig>(c);
+                    c.FindCharacter[Utilities.SaveKey] = new Dictionary<string, Color>();
+                    Helper.WriteConfig(c);
                 }
-                List<ModTool> modTools = this.ModTools;
-                if (modTools != null)
-                {
-                    modTools.Clear();
-                }
-                List<ModTool> modTools2 = this.ModTools;
-                if (modTools2 != null)
-                {
-                    modTools2.Add(new NPCFind(helper, this.Monitor, c));
-                }
-                List<ModTool> modTools3 = this.ModTools;
-                if (modTools3 != null)
-                {
-                    modTools3.Add(new FindObject(this.Monitor, helper, c));
-                }
-                List<ModTool> modTools4 = this.ModTools;
-                if (modTools4 != null)
-                {
-                    modTools4.ForEach(delegate (ModTool p)
-                    {
-                        p.Initialization();
-                    });
-                }
+                ModTools.Clear();
+                ModTools.Add(new NPCFind(helper, Monitor, c));
+                ModTools.Add(new FindObject(Monitor, helper, c));
+                ModTools.ForEach(p => p.Initialization());
             };
-            helper.Events.GameLoop.GameLaunched += delegate (object o, GameLaunchedEventArgs e)
+
+            helper.Events.GameLoop.GameLaunched += (o, e) =>
             {
-                List<ModTool> modTools = this.ModTools;
-                if (modTools != null)
-                {
-                    modTools.ForEach(delegate (ModTool p)
-                    {
-                        p.Destroy();
-                    });
-                }
-                List<ModTool> modTools2 = this.ModTools;
-                if (modTools2 != null)
-                {
-                    modTools2.Clear();
-                }
+                ModTools.ForEach(p => p.Destroy());
+                ModTools.Clear();
             };
         }
 
         public void ObjectCliked(GameLocation location, StardewValley.Object gameObject)
         {
-            ITranslationHelper i18n = base.Helper.Translation;
-            string title = base.ModManifest.Name;
-            bool add = !this.config.ObjectToFind[Utilities.SaveKey].ContainsKey(gameObject.name);
-            Response[] responses = new Response[]
+            var i18n = Helper.Translation;
+            string title = ModManifest.Name;
+            bool add = !config.ObjectToFind[Utilities.SaveKey].ContainsKey(gameObject.name);
+            var responses = new[]
             {
-            add ? new Response("addobject", i18n.Get("AddObject", new        {            gameObject.displayName            })) : new Response("deleteobject", i18n.Get("DeleteObject", new        {            gameObject.displayName        })),       new Response("exit", i18n.Get("Exit"))           };
-            Action a111 = null;
-            Action<Farmer, string> Choose = delegate (Farmer f, string k)
-            {
-                if (!(k == "addobject"))
-                {
-                    if (!(k == "deleteobject"))
-                    {
-                        if (!(k == "exit"))
-                        {
-                        }
-                    }
-                    else
-                    {
-                        this.config.ObjectToFind[Utilities.SaveKey].Remove(gameObject.name);
-                        this.Helper.WriteConfig<ModConfig>(this.config);
-                    }
-                }
-                else
-                {
-                    Game1.exitActiveMenu();
-                    Color @object = this.config.Object;
-                    Action<Color> setColor = delegate (Color null_)
-                    {
-                    };
-                    Action callBack;
-                    if ((callBack = a111) == null)
-                    {
-                        callBack = (a111 = delegate ()
-                        {
-                            add1((Game1.activeClickableMenu as ColorPickerMenu).MColor);
-                            Game1.exitActiveMenu();
-                            Game1.player.canMove = true;
-                        });
-                    }
-                    Game1.activeClickableMenu = new ColorPickerMenu(@object, setColor, callBack);
-                }
-            };
-            location.createQuestionDialogue(title, responses, new GameLocation.afterQuestionBehavior(Choose.Invoke), null);
+                    add
+                        ? new Response("addobject", i18n.Get("AddObject", new { gameObject.displayName }))
+                        : new Response("deleteobject", i18n.Get("DeleteObject", new { gameObject.displayName })),
+                    new Response("exit", i18n.Get("Exit"))
+                };
+
             void add1(Color cl)
             {
-
-                config.ObjectToFind[Utilities.SaveKey].Add(gameObject.name, cl);
-                Helper.WriteConfig<ModConfig>(config);
+                config.ObjectToFind[Utilities.SaveKey][gameObject.name] = cl;
+                Helper.WriteConfig(config);
             }
+
+            Action a111 = null;
+            void callBack()
+            {
+                add1((Game1.activeClickableMenu as ColorPickerMenu).MColor);
+                Game1.exitActiveMenu();
+                Game1.player.canMove = true;
+            }
+
+            void Choose(Farmer f, string k)
+            {
+                if (k == "addobject")
+                {
+                    Game1.exitActiveMenu();
+                    Game1.activeClickableMenu = new ColorPickerMenu(config.Object, _ => { }, a111 ??= callBack);
+                }
+                else if (k == "deleteobject")
+                {
+                    config.ObjectToFind[Utilities.SaveKey].Remove(gameObject.name);
+                    Helper.WriteConfig(config);
+                }
+            }
+
+            location.createQuestionDialogue(title, responses, new GameLocation.afterQuestionBehavior(Choose), null);
         }
 
         public void NPCClicked(GameLocation location, NPC npc)
         {
-            ITranslationHelper i18n = base.Helper.Translation;
-            string title = base.ModManifest.Name;
-            bool add = !this.config.FindCharacter[Utilities.SaveKey].ContainsKey(npc.name);
-            Response[] responses = new Response[]
+            var i18n = Helper.Translation;
+            string title = ModManifest.Name;
+            bool add = !config.FindCharacter[Utilities.SaveKey].ContainsKey(npc.Name);
+            var responses = new[]
             {
-        add ? new Response("addnpc", i18n.Get("AddNPC", new
-        {
-            npc.displayName
-        })) : new Response("deletenpc", i18n.Get("DeleteNPC", new
-        {
-            npc.displayName
-        })),
-        new Response("exit", i18n.Get("Exit"))
-            };
-            Action a111 = null;
-            Action<Farmer, string> Choose = delegate (Farmer f, string k)
-            {
-                if (!(k == "addnpc"))
-                {
-                    if (!(k == "deletenpc"))
-                    {
-                        if (!(k == "exit"))
-                        {
-                        }
-                    }
-                    else
-                    {
-                        this.config.FindCharacter[Utilities.SaveKey].Remove(npc.name);
-                        this.Helper.WriteConfig<ModConfig>(this.config);
-                    }
-                }
-                else
-                {
-                    Game1.exitActiveMenu();
-                    Color npc2 = this.config.NPC;
-                    Action<Color> setColor = delegate (Color null_)
-                    {
-                    };
-                    Action callBack;
-                    if ((callBack = a111) == null)
-                    {
-                        callBack = (a111 = delegate ()
-                        {
-                            add1((Game1.activeClickableMenu as ColorPickerMenu).MColor);
-                            Game1.exitActiveMenu();
-                            Game1.player.canMove = true;
-                        });
-                    }
-                    Game1.activeClickableMenu = new ColorPickerMenu(npc2, setColor, callBack);
-                }
-            };
-            location.createQuestionDialogue(title, responses, new GameLocation.afterQuestionBehavior(Choose.Invoke), null);
+                    add
+                        ? new Response("addnpc", i18n.Get("AddNPC", new { npc.displayName }))
+                        : new Response("deletenpc", i18n.Get("DeleteNPC", new { npc.displayName })),
+                    new Response("exit", i18n.Get("Exit"))
+                };
+
             void add1(Color cl)
             {
-
-                config.FindCharacter[Utilities.SaveKey].Add(npc.name, cl);
-                Helper.WriteConfig<ModConfig>(config);
+                config.FindCharacter[Utilities.SaveKey][npc.Name] = cl;
+                Helper.WriteConfig(config);
             }
+
+            Action a111 = null;
+            void callBack()
+            {
+                add1((Game1.activeClickableMenu as ColorPickerMenu).MColor);
+                Game1.exitActiveMenu();
+                Game1.player.canMove = true;
+            }
+
+            void Choose(Farmer f, string k)
+            {
+                if (k == "addnpc")
+                {
+                    Game1.exitActiveMenu();
+                    Game1.activeClickableMenu = new ColorPickerMenu(config.NPC, _ => { }, a111 ??= callBack);
+                }
+                else if (k == "deletenpc")
+                {
+                    config.FindCharacter[Utilities.SaveKey].Remove(npc.Name);
+                    Helper.WriteConfig(config);
+                }
+            }
+
+            location.createQuestionDialogue(title, responses, new GameLocation.afterQuestionBehavior(Choose), null);
         }
 
         public void InitOptionsElement()
         {
-            List<OptionsElement> oe = Utilities.OptionsElements;
+            var oe = Utilities.OptionsElements;
             oe.Clear();
-            ITranslationHelper translation = Helper.Translation;
+            var translation = Helper.Translation;
+
+            void saveConfig() => Helper.WriteConfig(config);
+            void initOptions()
+            {
+                InitOptionsElement();
+                (Game1.activeClickableMenu as ModMenu)?.updateElements(oe);
+            }
+
             oe.Add(new OptionsElement(translation.Get("title")));
-            oe.Add((OptionsElement)(object)new ModOptionsCheckbox(translation.Get("FindQuestObject"), -1, delegate (bool b)
+            oe.Add(new ModOptionsCheckbox(translation.Get("FindQuestObject"), -1, b =>
             {
                 config.FindQuestObject = b;
                 saveConfig();
                 initOptions();
             }, config.FindQuestObject));
-            oe.Add((OptionsElement)(object)new ModOptionsCheckbox(translation.Get("DrawArea"), -1, delegate (bool b)
+            oe.Add(new ModOptionsCheckbox(translation.Get("DrawArea"), -1, b =>
             {
                 config.DrawArea = b;
                 saveConfig();
             }, config.DrawArea));
-            oe.Add((OptionsElement)(object)new ModOptionsCheckbox(translation.Get("SearchMode"), -1, delegate (bool b)
+            oe.Add(new ModOptionsCheckbox(translation.Get("SearchMode"), -1, b =>
             {
                 config.SearchMode = b;
                 saveConfig();
             }, config.SearchMode));
-            oe.Add((OptionsElement)(object)new ModOptionsCheckbox(translation.Get("FindAllNPC"), -1, delegate (bool b)
+            oe.Add(new ModOptionsCheckbox(translation.Get("FindAllNPC"), -1, b =>
             {
                 config.FindAllNPC = b;
                 saveConfig();
                 initOptions();
             }, config.FindAllNPC));
-            oe.Add((OptionsElement)(object)new ModOptionsCheckbox(translation.Get("FindAllObject"), -1, delegate (bool b)
+            oe.Add(new ModOptionsCheckbox(translation.Get("FindAllObject"), -1, b =>
             {
                 config.FindAllObject = b;
                 saveConfig();
                 initOptions();
             }, config.FindAllObject));
+
             if (Utilities.IsAndroid)
             {
-                oe.Add((OptionsElement)(object)new ModOptionsCheckbox(translation.Get("InitiatesObjectSelectionModeForMobile"), -1, delegate (bool b)
+                oe.Add(new ModOptionsCheckbox(translation.Get("InitiatesObjectSelectionModeForMobile"), -1, b =>
                 {
                     config.InitiatesObjectSelectionModeForMobile = b;
                     saveConfig();
                 }, config.InitiatesObjectSelectionModeForMobile));
             }
-            oe.Add((OptionsElement)new OptionsButton(translation.Get("ResetModConfig"), (Action)delegate
+
+            oe.Add(new OptionsButton(translation.Get("ResetModConfig"), () =>
             {
                 config.reset();
                 saveConfig();
                 initOptions();
             }));
+
             if (config.FindAllNPC)
             {
-                oe.Add((OptionsElement)(object)new ModOptionsColorPicker(translation.Get("Color.Picker", (object)new
-                {
-                    name = translation.Get("NPC")
-                }), config.NPC, delegate (Color c)
+                oe.Add(new ModOptionsColorPicker(translation.Get("Color.Picker", new { name = translation.Get("NPC") }), config.NPC, c =>
                 {
                     config.NPC = c;
                     saveConfig();
                 }));
-                oe.Add((OptionsElement)(object)new ModOptionsColorPicker(translation.Get("Color.Picker", (object)new
-                {
-                    name = translation.Get("Monsters")
-                }), config.Monsters, delegate (Color c)
+                oe.Add(new ModOptionsColorPicker(translation.Get("Color.Picker", new { name = translation.Get("Monsters") }), config.Monsters, c =>
                 {
                     config.Monsters = c;
                     saveConfig();
@@ -306,10 +248,7 @@ namespace FindObjectMod
             }
             if (config.FindAllObject)
             {
-                oe.Add((OptionsElement)(object)new ModOptionsColorPicker(translation.Get("Color.Picker", (object)new
-                {
-                    name = translation.Get("Object")
-                }), config.Object, delegate (Color c)
+                oe.Add(new ModOptionsColorPicker(translation.Get("Color.Picker", new { name = translation.Get("Object") }), config.Object, c =>
                 {
                     config.Object = c;
                     saveConfig();
@@ -317,10 +256,7 @@ namespace FindObjectMod
             }
             if (config.FindQuestObject)
             {
-                oe.Add((OptionsElement)(object)new ModOptionsColorPicker(translation.Get("Color.Picker", (object)new
-                {
-                    name = translation.Get("QuestObject")
-                }), config.QuestObject, delegate (Color c)
+                oe.Add(new ModOptionsColorPicker(translation.Get("Color.Picker", new { name = translation.Get("QuestObject") }), config.QuestObject, c =>
                 {
                     config.QuestObject = c;
                     saveConfig();
@@ -329,61 +265,42 @@ namespace FindObjectMod
             if (config.ObjectToFind[Utilities.SaveKey].Count > 0)
             {
                 oe.Add(new OptionsElement(translation.Get("ObjectToFind")));
-                oe.Add((OptionsElement)new OptionsButton(translation.Get("Clear", (object)new
-                {
-                    name = translation.Get("Object")
-                }), (Action)delegate
+                oe.Add(new OptionsButton(translation.Get("Clear", new { name = translation.Get("Object") }), () =>
                 {
                     config.ObjectToFind[Utilities.SaveKey].Clear();
                     saveConfig();
                     initOptions();
                 }));
-                foreach (string i in config.ObjectToFind[Utilities.SaveKey].Keys)
+                foreach (var i in config.ObjectToFind[Utilities.SaveKey].Keys.ToList())
                 {
-                    oe.Add((OptionsElement)(object)new ModOptionsColorPicker(translation.Get("Color.Picker", (object)new
+                    var key = i;
+                    oe.Add(new ModOptionsColorPicker(translation.Get("Color.Picker", new { name = key }), config.ObjectToFind[Utilities.SaveKey][key], c =>
                     {
-                        name = i
-                    }), config.ObjectToFind[Utilities.SaveKey][i], delegate (Color c)
-                    {
-                        config.ObjectToFind[Utilities.SaveKey][i] = c;
+                        config.ObjectToFind[Utilities.SaveKey][key] = c;
                         saveConfig();
                     }));
                 }
             }
-            if (config.FindCharacter[Utilities.SaveKey].Count <= 0)
+            if (config.FindCharacter[Utilities.SaveKey].Count > 0)
             {
-                return;
-            }
-            oe.Add(new OptionsElement(translation.Get("FindCharacter")));
-            oe.Add((OptionsElement)new OptionsButton(translation.Get("Clear", (object)new
-            {
-                name = translation.Get("NPC")
-            }), (Action)delegate
-            {
-                config.FindCharacter[Utilities.SaveKey].Clear();
-                saveConfig();
-                initOptions();
-            }));
-            foreach (string j in config.FindCharacter[Utilities.SaveKey].Keys)
-            {
-                oe.Add((OptionsElement)(object)new ModOptionsColorPicker(translation.Get("Color.Picker", (object)new
+                oe.Add(new OptionsElement(translation.Get("FindCharacter")));
+                oe.Add(new OptionsButton(translation.Get("Clear", new { name = translation.Get("NPC") }), () =>
                 {
-                    name = j
-                }), config.FindCharacter[Utilities.SaveKey][j], delegate (Color c)
-                {
-                    config.FindCharacter[Utilities.SaveKey][j] = c;
+                    config.FindCharacter[Utilities.SaveKey].Clear();
                     saveConfig();
+                    initOptions();
                 }));
-            }
-            void initOptions()
-            {
-                InitOptionsElement();
-                (Game1.activeClickableMenu as ModMenu)?.updateElements(oe);
-            }
-            void saveConfig()
-            {
-                Helper.WriteConfig<ModConfig>(config);
+                foreach (var j in config.FindCharacter[Utilities.SaveKey].Keys.ToList())
+                {
+                    var key = j;
+                    oe.Add(new ModOptionsColorPicker(translation.Get("Color.Picker", new { name = key }), config.FindCharacter[Utilities.SaveKey][key], c =>
+                    {
+                        config.FindCharacter[Utilities.SaveKey][key] = c;
+                        saveConfig();
+                    }));
+                }
             }
         }
     }
 }
+    

@@ -17,7 +17,7 @@ namespace CloudSave.Framework.Patch
 
         public override void Init()
         {
-            this.Patches.Add(new LoadGameMenuPatch());
+            
         }
     }
 }
