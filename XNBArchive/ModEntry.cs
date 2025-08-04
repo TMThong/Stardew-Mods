@@ -1,7 +1,5 @@
 ﻿using HarmonyLib;
 using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Content.Pipeline;
-using Microsoft.Xna.Framework.Content.Pipeline.Serialization.Compiler;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Newtonsoft.Json;
@@ -28,12 +26,14 @@ namespace XNBArchive
 
         internal ContentManager Content;
 
+        public Assembly[] AssembliesReferences;
+
         public override void Entry(IModHelper helper)
         {
             config = helper.ReadConfig<Config>();
 
             Helper.Events.GameLoop.GameLaunched += OnGameLaunched;
-
+            ICollection<Assembly> assemblies = new List<Assembly>();
             foreach (var reference in Directory.GetFiles(Helper.DirectoryPath.Replace("\\", AltDirectorySeparatorChar + "") + AltDirectorySeparatorChar + "Reference", "*", SearchOption.AllDirectories))
             {
                 FileInfo fileInfo = new FileInfo(reference);
@@ -49,6 +49,7 @@ namespace XNBArchive
                                 IEnumerable<Module> modules = this.GetType().Assembly.Modules;
                                 if (!modules.Contains(m)) modules.AddItem(m);
                             }
+                            assemblies.Add(assembly_);
                             Monitor.Log($"Load {fileInfo.Name} OK", LogLevel.Alert);
                         }
                         catch (Exception ex)
@@ -58,6 +59,7 @@ namespace XNBArchive
                     }
                 }
             }
+            AssembliesReferences = assemblies.ToArray();
         }
 
         public void OnGameLaunched(object sender, EventArgs eventArgs)
@@ -147,8 +149,19 @@ namespace XNBArchive
                                 xnbFileInfo.Directory.Create();
                                 using (var stream = xnbFileInfo.Open(FileMode.OpenOrCreate))
                                 {
-                                    ContentCompiler contentCompiler = new ContentCompiler();
-                                    contentCompiler.Compile(stream, obj, TargetPlatform, GraphicsProfile.HiDef, false, "", "");
+                                    Type contentCompilerType = this.AssembliesReferences.FirstOrDefault(a => a.GetType("Microsoft.Xna.Framework.Content.Pipeline.Serialization.Compiler.ContentCompiler") != null)
+                                        ?.GetType("Microsoft.Xna.Framework.Content.Pipeline.Serialization.Compiler.ContentCompiler");
+                                    if (contentCompilerType == null)
+                                        throw new NullReferenceException("ContentCompiler type not found in referenced assemblies.");
+                                    object contentCompiler = Activator.CreateInstance(contentCompilerType);
+                                    var methodInfo = contentCompiler.GetType().GetMethod("Compile", BindingFlags.Public | BindingFlags.Instance);
+                                    if (methodInfo != null)
+                                    {
+                                        // Use reflection to call the Compile method
+                                        // The parameters are: stream, asset, targetPlatform, graphicsProfile, isDebug, contentIdentity, and outputName
+                                        // We pass null for contentIdentity and outputName as they are not used in this context
+                                        methodInfo.Invoke(contentCompiler, new object[] { stream, obj, TargetPlatform, GraphicsProfile.HiDef, false, null, null });
+                                    }
                                 }
                                 Log($"Successfully packaged the {dir + AltDirectorySeparatorChar + fileInfo.Name} file", LogLevel.Info);
                             }
@@ -179,19 +192,25 @@ namespace XNBArchive
 
 
 
-        public TargetPlatform TargetPlatform
+        public object TargetPlatform
         {
             get
             {
-                switch (Constants.TargetPlatform)
+                // Use reflection to get the TargetPlatform enum value by name
+                var platformName = Constants.TargetPlatform switch
                 {
-
-                    case GamePlatform.Android: return TargetPlatform.Android;
-                    case GamePlatform.Linux: return TargetPlatform.DesktopGL;
-                    case GamePlatform.Mac: return TargetPlatform.MacOSX;
-                    case GamePlatform.Windows: return TargetPlatform.Windows;
-                }
-                return TargetPlatform.DesktopGL;
+                    GamePlatform.Android => "Android",
+                    GamePlatform.Linux => "DesktopGL",
+                    GamePlatform.Mac => "MacOSX",
+                    GamePlatform.Windows => "Windows",
+                    _ => "DesktopGL"
+                };
+                Type targetPlatformType = this.AssembliesReferences.FirstOrDefault(a => a.GetType("Microsoft.Xna.Framework.Content.Pipeline.TargetPlatform") != null)
+                    ?.GetType("Microsoft.Xna.Framework.Content.Pipeline.TargetPlatform");
+                if (targetPlatformType == null)
+                    throw new NullReferenceException("TargetPlatform type not found in referenced assemblies.");
+                var value = Enum.Parse(targetPlatformType, platformName);
+                return value;
             }
         }
 
