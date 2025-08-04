@@ -55,6 +55,10 @@ namespace XNBArchive
                         catch (Exception ex)
                         {
                             this.Monitor.Log("" + ex.GetBaseException(), LogLevel.Error);
+                            this.Monitor.Log($"Load {fileInfo.Name} failed", LogLevel.Error);
+                            this.Monitor.Log($"Please check if the file is a valid assembly file.", LogLevel.Error);
+                            this.Monitor.Log($"If you think this is a bug, please report it on the mod's GitHub page.", LogLevel.Error);
+                            return;
                         }
                     }
                 }
@@ -160,7 +164,7 @@ namespace XNBArchive
                                         // Use reflection to call the Compile method
                                         // The parameters are: stream, asset, targetPlatform, graphicsProfile, isDebug, contentIdentity, and outputName
                                         // We pass null for contentIdentity and outputName as they are not used in this context
-                                        methodInfo.Invoke(contentCompiler, new object[] { stream, obj, TargetPlatform, GraphicsProfile.HiDef, false, null, null });
+                                        methodInfo.Invoke(contentCompiler, new object[] { stream, obj, TargetPlatform, GraphicsProfile.HiDef, false, string.Empty, string.Empty });
                                     }
                                 }
                                 Log($"Successfully packaged the {dir + AltDirectorySeparatorChar + fileInfo.Name} file", LogLevel.Info);
