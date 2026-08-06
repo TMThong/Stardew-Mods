@@ -10,19 +10,9 @@
 		<EnableHarmony>true</EnableHarmony>
 	</PropertyGroup>
 
-	<ItemGroup>
-		<None Remove="ATI.TextureConverter.dll" />
-		<None Remove="Microsoft.Win32.Registry.dll" />
-		<None Remove="Nvidia.TextureTools.dll" />
-		<None Remove="PVRTexLibNET.dll" />
-		<None Remove="Reference\xTilePipeline.dll" />
-		<None Remove="System.Runtime.InteropServices.dll" />
-	</ItemGroup>
+
 
 	<ItemGroup>
-		<Content Include="ATI.TextureConverter.dll">
-		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</Content>
 		<Content Include="Microsoft.Win32.Registry.dll">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
@@ -89,20 +79,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Update="AssimpNet.dll">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
 		<None Update="pack\README.md">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
-		<None Update="Reference\MonoGame.Framework.Content.Pipeline.dll">
-		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
 		<None Update="Reference\README.md">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-		<None Update="Reference\SharpFont.dll">
-		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
 		<None Update="unpack\README.md">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
