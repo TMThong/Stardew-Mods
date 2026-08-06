@@ -1,10 +1,10 @@
-﻿{
-  "Name": "StardewConnect",
-  "Author": "ModAuthor",
-  "Version": "1.0.0",
-  "Description": "Mod Template",
-  "UniqueID": "ModAuthor.StardewConnect",
+{
+  "Name": "Stardew Connect",
+  "Author": "Tran Minh Thong",
+  "Version": "0.1.0",
+  "Description": "Connect directly with friends through private peer-to-peer multiplayer rooms.",
+  "UniqueID": "TranMinhThong.StardewConnect",
   "EntryDll": "StardewConnect.dll",
-  "MinimumApiVersion": "2.11",
-  "UpdateKeys": [ "Nexus:" ]
+  "MinimumApiVersion": "4.0.0",
+  "UpdateKeys": []
 }
