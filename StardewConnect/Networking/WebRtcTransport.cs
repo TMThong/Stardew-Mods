@@ -225,8 +225,11 @@ namespace StardewConnect.Networking
 
         public Task ClosePeerAsync(string peerId)
         {
+            this.earlyCandidates.TryRemove(peerId, out _);
+
             if (this.links.TryRemove(peerId, out PeerLink link))
             {
+                link.Retire();
                 link.Dispose();
                 this.PeerStateChanged?.Invoke(this, new PeerStateChangedEventArgs(peerId, PeerConnectionState.Closed, "closed"));
             }
@@ -236,10 +239,13 @@ namespace StardewConnect.Networking
 
         public Task CloseAllAsync()
         {
+            this.earlyCandidates.Clear();
+
             foreach (string peerId in new List<string>(this.links.Keys))
             {
                 if (this.links.TryRemove(peerId, out PeerLink link))
                 {
+                    link.Retire();
                     link.Dispose();
                     this.PeerStateChanged?.Invoke(this, new PeerStateChangedEventArgs(peerId, PeerConnectionState.Closed, "closed"));
                 }
@@ -254,11 +260,15 @@ namespace StardewConnect.Networking
                 return;
 
             this.disposed = true;
+            this.earlyCandidates.Clear();
 
             foreach (string peerId in new List<string>(this.links.Keys))
             {
                 if (this.links.TryRemove(peerId, out PeerLink link))
+                {
+                    link.Retire();
                     link.Dispose();
+                }
             }
         }
 
@@ -449,7 +459,8 @@ namespace StardewConnect.Networking
 
         private void Report(PeerLink link, PeerConnectionState state, string detail = null)
         {
-            if (link.State == state)
+            // A link replaced by a renegotiation must not report state for the live one.
+            if (link.IsRetired || link.State == state)
                 return;
 
             link.State = state;
@@ -458,6 +469,9 @@ namespace StardewConnect.Networking
 
         private void Fail(PeerLink link, string detail)
         {
+            if (link.IsRetired)
+                return;
+
             link.State = PeerConnectionState.Failed;
             this.monitor.Log($"WebRTC: peer {Shorten(link.PeerId)} failed - {detail}", LogLevel.Warn);
             this.PeerStateChanged?.Invoke(this, new PeerStateChangedEventArgs(link.PeerId, PeerConnectionState.Failed, detail));
@@ -494,6 +508,20 @@ namespace StardewConnect.Networking
             public RTCDataChannel Channel { get; set; }
 
             public PeerConnectionState State { get; set; } = PeerConnectionState.New;
+
+            /// <summary>True once this link was superseded; its callbacks must stop reporting.</summary>
+            public bool IsRetired { get; private set; }
+
+            public void Retire()
+            {
+                this.IsRetired = true;
+            }
+
+            public void AddPendingCandidates(IEnumerable<IceCandidatePayload> candidates)
+            {
+                lock (this.gate)
+                    this.pendingCandidates.AddRange(candidates);
+            }
 
             public void MarkRemoteDescriptionSet()
             {

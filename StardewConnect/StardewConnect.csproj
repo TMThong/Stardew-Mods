@@ -10,8 +10,12 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <LangVersion>10.0</LangVersion>
     <EnableHarmony>false</EnableHarmony>
-    <!-- SIPSorcery and its dependencies must ship inside the mod folder. -->
-    <BundleExtraAssemblies>ThirdParty</BundleExtraAssemblies>
+    <!--
+      SIPSorcery and its dependencies must ship inside the mod folder.
+      "System" is required as well: SIPSorcery needs Microsoft.Extensions.Logging.Abstractions
+      and System.Net.IPNetwork, and neither is shipped with the game or SMAPI.
+    -->
+    <BundleExtraAssemblies>ThirdParty,System</BundleExtraAssemblies>
   </PropertyGroup>
 
   <ItemGroup>
