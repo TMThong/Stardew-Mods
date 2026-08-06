@@ -1,11 +1,17 @@
 
 
 # List of Mods
++ [Stardew Connect](#stardew-connect)
 + [MultiplayerMod](#multiplayermod)
 + [XNBArchive](#xnbarchive)
 + [NoWarpDelay](#nowarpdelay)
 + [Mini Tool NPC Mod](#mini-tool-npc-mod)
 + [Find Object Mod](#find-object-mod)
+# Stardew Connect
+- Private peer-to-peer multiplayer rooms for Stardew Valley PC (SMAPI 4.x / .NET 6).
+- The host creates a room and shares a Room ID + password; a small signaling server introduces the players and then gets out of the way, so game traffic travels directly over a WebRTC data channel.
+- Two projects: the mod in [`StardewConnect/`](StardewConnect) and the signaling server in [`svd-connect-server/`](svd-connect-server).
+- Documentation: [docs/StardewConnect](docs/StardewConnect) - architecture, protocol, deployment, debugging, security checklist and current limitations.
 # MultiplayerMod
 - It is a Mod that makes it possible for players to play together. 
 - Recommended for version 1.5.6.39 if you are an Android user

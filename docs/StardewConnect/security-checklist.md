@@ -70,10 +70,16 @@ Work through this before publishing the mod or exposing a signaling server to th
 
 ## Supply chain
 
-- [ ] `npm audit` is clean for the server.
-- [ ] The mod's NuGet dependencies have no known advisories (`dotnet list package
-      --vulnerable`). SIPSorcery in particular should be kept current - older 8.x releases
-      carry a published advisory.
+- [ ] `npm audit --omit=dev` is clean for the server. (It is, as of 0.1.0.)
+- [ ] SIPSorcery is current. Older 8.x releases carry a published advisory; 0.1.0 pins
+      10.0.13.
+- [ ] `dotnet list package --vulnerable --include-transitive` has been reviewed. As of
+      0.1.0 it reports `System.Net.Http 4.3.0` and `System.Text.RegularExpressions 4.3.0`,
+      pulled in through SIPSorcery's `NETStandard.Library` chain. **These are compile-time
+      facades on .NET 6** - the implementations come from the shared framework and neither
+      package DLL is present in the build output or the release zip. Re-check this whenever
+      SIPSorcery is upgraded, and confirm the zip still contains no `System.Net.Http.dll` or
+      `System.Text.RegularExpressions.dll`.
 - [ ] The release zip contains exactly the assemblies the mod needs and nothing unexpected.
 - [ ] Dependencies are pinned in `package-lock.json` and the `.csproj`.
 

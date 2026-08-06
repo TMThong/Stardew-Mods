@@ -13,6 +13,14 @@ The server does exactly four things:
 **It never sees gameplay traffic.** Once the WebRTC DataChannel is up, game data flows
 directly between host and clients.
 
+System documentation lives in [`docs/StardewConnect`](../docs/StardewConnect):
+[architecture](../docs/StardewConnect/architecture.md) ·
+[protocol](../docs/StardewConnect/protocol.md) ·
+[deployment](../docs/StardewConnect/deployment.md) ·
+[debugging](../docs/StardewConnect/debugging.md) ·
+[security checklist](../docs/StardewConnect/security-checklist.md) ·
+[limitations](../docs/StardewConnect/limitations.md)
+
 ---
 
 ## Requirements
