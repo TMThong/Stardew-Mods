@@ -1,19 +1,39 @@
 {
   "name": "svd-connect-server",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "version": "0.1.0",
+  "description": "Signaling server for the Stardew Connect peer-to-peer multiplayer mod.",
+  "private": true,
+  "type": "module",
+  "main": "dist/index.js",
+  "engines": {
+    "node": ">=20.0.0"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "start": "node dist/index.js",
+    "dev": "tsx watch src/index.ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "manual-test": "node scripts/manual-test.mjs"
+  },
+  "keywords": [
+    "stardew-valley",
+    "webrtc",
+    "signaling",
+    "websocket"
+  ],
+  "author": "Tran Minh Thong",
+  "license": "MIT",
   "dependencies": {
-    "express": "^5.2.1",
-    "ws": "^8.21.2"
+    "ws": "^8.18.0",
+    "zod": "^3.24.1"
   },
   "devDependencies": {
-    "nodemon": "^3.1.14"
+    "@types/node": "^22.10.5",
+    "@types/ws": "^8.5.13",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3",
+    "vitest": "^3.0.5"
   }
 }
