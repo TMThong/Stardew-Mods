@@ -1,0 +1,10 @@
+﻿{
+  "Name": "StardewConnect",
+  "Author": "ModAuthor",
+  "Version": "1.0.0",
+  "Description": "Stardew Connect expands Stardew Valley multiplayer with a lightweight peer-to-peer networking system.",
+  "UniqueID": "ModAuthor.StardewConnect",
+  "EntryDll": "StardewConnect.dll",
+  "MinimumApiVersion": "2.11",
+  "UpdateKeys": [ "Nexus:" ]
+}
