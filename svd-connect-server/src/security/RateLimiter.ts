@@ -123,8 +123,9 @@ export class FailedAttemptTracker {
     const entry = this.entries.get(key);
     if (entry === undefined) return false;
     if (entry.lockedUntil > now) return true;
-    // Lockout elapsed - forget the key entirely so the counter starts fresh.
-    this.entries.delete(key);
+    // Not locked. Only forget the key once the failure streak itself went stale -
+    // dropping it eagerly here would reset the counter on every single attempt.
+    if (entry.failures === 0 && entry.lastFailureAt + this.lockoutMs <= now) this.entries.delete(key);
     return false;
   }
 

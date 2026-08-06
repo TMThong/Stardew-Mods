@@ -1,0 +1,12 @@
+node_modules
+dist
+tests
+coverage
+.env
+*.log
+.git
+.gitignore
+Dockerfile
+docker-compose.yml
+README.md
+vitest.config.ts
