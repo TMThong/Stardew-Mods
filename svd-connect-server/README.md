@@ -52,8 +52,10 @@ prints every frame, so it doubles as living protocol documentation.
 | Command | What it does |
 | --- | --- |
 | `npm run dev` | Watch mode via `tsx` |
-| `npm run build` | Type-check + emit `dist/` |
+| `npm run build` | Type-check + emit `dist/` (ESM) |
+| `npm run build:cjs` | Emit `dist-cjs/` (CommonJS) for hosts whose loader `require()`s the startup file - cPanel/LiteSpeed, Passenger |
 | `npm start` | Run the compiled server (`dist/index.js`) |
+| `npm run start:cjs` | Run the CommonJS build |
 | `npm run typecheck` | Type-check `src/` **and** `tests/` without emitting |
 | `npm test` | Full vitest suite (unit + real-WebSocket integration) |
 | `npm run manual-test [url]` | Smoke test against a running server |

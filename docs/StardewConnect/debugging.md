@@ -96,8 +96,102 @@ your server or the protocol.
 | Connects, then drops after ~30 s | A proxy is closing idle WebSockets | Raise `proxy_read_timeout`; the server pings every 30 s by default |
 | `host_disconnected` immediately | The host's socket died; the room is destroyed on purpose | Check the host's SMAPI log for the signaling error |
 | Mod fails to load with `FileNotFoundException` | The mod folder is missing a bundled dependency | Reinstall the release zip - it must contain `SIPSorcery.dll`, `BouncyCastle.Cryptography.dll`, `Microsoft.Extensions.Logging.Abstractions.dll`, `System.Net.IPNetwork.dll` and friends |
+| SMAPI skips the mod: "its DLL couldn't be loaded", `FileLoadException: Could not load file or assembly '...'` | A bundled assembly collides with a different version the game already loaded | See "Assembly version collisions" below |
+| SMAPI skips the mod: `Rewriting X.dll failed` / `Mono.Cecil.AssemblyResolutionException: Failed to resolve assembly` | A dependency exists only under `runtimes/<rid>/lib/`, where Cecil does not look | See "RID-specific assemblies" below |
 
 ---
+
+## Assembly version collisions
+
+Symptom in the SMAPI log:
+
+```text
+- Stardew Connect 0.1.0 because its DLL couldn't be loaded.
+  (Error: FileLoadException: Could not load file or assembly
+   'Microsoft.Extensions.DependencyInjection.Abstractions, Version=8.0.0.0, ...')
+```
+
+Cause: SMAPI eagerly `Assembly.LoadFrom()`s **every** DLL in the mod folder. Stardew Valley
+itself ships some of the same assemblies and has already loaded them into the default load
+context. Two files with the same simple name but different versions cannot coexist there, so
+the load throws and SMAPI skips the whole mod.
+
+.NET will happily bind a *higher* version than requested, but never a lower one - so the
+rule is:
+
+- the game ships a **newer** copy than we need -> do not bundle ours;
+- the game ships an **older** copy than we need -> bundling ours breaks mod loading; check
+  whether the dependency is actually reached at runtime, and if it is not, drop it;
+- the game does not ship it at all -> bundle ours.
+
+`Microsoft.Extensions.DependencyInjection.Abstractions` is exactly the middle case: the game
+carries 5.0.0.0, SIPSorcery's package graph pulls 8.0.0.0, and SIPSorcery never binds to it
+on the code paths this mod uses (a full DataChannel session was verified with only 5.0.0.0
+present). It is therefore excluded from the bundle in `StardewConnect.csproj`:
+
+```xml
+<IgnoreModFilePaths>Microsoft.Extensions.DependencyInjection.Abstractions.dll</IgnoreModFilePaths>
+```
+
+### Auditing the bundle after a dependency upgrade
+
+Run this after changing any NuGet reference; it lists every bundled assembly that also
+exists in the game folder with a different version:
+
+```powershell
+$game = "C:\Path\To\Stardew Valley"
+$out  = "StardewConnect\bin\Release\net6.0"
+Get-ChildItem $out -Filter *.dll | ForEach-Object {
+    $gamePath = Join-Path $game $_.Name
+    if (Test-Path $gamePath) {
+        $mine  = ([Reflection.AssemblyName]::GetAssemblyName($_.FullName)).Version
+        $their = ([Reflection.AssemblyName]::GetAssemblyName($gamePath)).Version
+        if ($mine -ne $their) { "COLLISION $($_.Name): mod=$mine game=$their" }
+    }
+}
+```
+
+Anything it prints will stop the mod from loading.
+
+## RID-specific assemblies
+
+Symptom in the SMAPI log:
+
+```text
+- Stardew Connect 0.1.0 because its DLL couldn't be loaded.
+  (Error: System.Exception: Rewriting Makaretu.Dns.Multicast.dll failed.
+   ---> Mono.Cecil.AssemblyResolutionException:
+        Failed to resolve assembly: 'Tmds.LibC, Version=0.2.0.0, ...')
+```
+
+Before loading a mod, SMAPI rewrites each of its assemblies with Mono.Cecil, and Cecil has
+to resolve **every** assembly reference to do that. Its resolver probes the mod folder root
+only. NuGet, however, places platform-specific dependencies under
+`runtimes/<rid>/lib/<tfm>/`, so they are shipped but invisible to the resolver.
+
+Here `Tmds.LibC` arrives that way (Makaretu.Dns.Multicast -> Tmds.LibC, pulled in by
+SIPSorcery's mDNS support). The build copies one copy to the mod folder root:
+
+```xml
+<Target Name="FlattenRidAssembliesForCecil" AfterTargets="Build" BeforeTargets="AfterBuild">
+  <ItemGroup>
+    <RidOnlyAssemblies Include="$(TargetDir)runtimes\**\lib\**\*.dll" />
+  </ItemGroup>
+  <Copy SourceFiles="@(RidOnlyAssemblies)" DestinationFolder="$(TargetDir)" SkipUnchangedFiles="true" />
+</Target>
+```
+
+The assembly is Linux-only at runtime and never executes on Windows - it only has to be
+*resolvable*.
+
+### Checking the whole folder before shipping
+
+The reliable pre-release gate is to do what SMAPI does: read every DLL in the packaged mod
+folder with Mono.Cecil and resolve all of its references against the mod folder plus the
+game folder. A ~60 line console app using `Mono.Cecil` and `DefaultAssemblyResolver` with
+both folders added as search directories will reproduce this class of failure exactly,
+before a player ever sees it. Run it against the extracted release zip; anything it reports
+as unresolved is a mod that will not load.
 
 ## Reading the state machine
 

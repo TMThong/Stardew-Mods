@@ -129,6 +129,122 @@ The process must be able to read both files, and it must be restarted after each
 
 ---
 
+## cPanel (LiteSpeed or Passenger)
+
+cPanel's "Setup Node.js App" runs your code through a loader that does
+`require(startupFile)` - `lsnode.js` on LiteSpeed, Passenger elsewhere. This package is
+ESM (`"type": "module"`), so the default `dist/` build fails immediately with:
+
+```text
+Error [ERR_REQUIRE_ESM]: require() of ES Module .../index.js is not supported
+    at startApplication (/usr/local/lsws/fcgi-bin/lsnode.js:48:15)
+```
+
+### Use the CommonJS build
+
+```bash
+npm ci
+npm run build:cjs
+```
+
+`dist-cjs/` is **self-contained and deploy-ready**. The build writes a
+`dist-cjs/package.json` that both overrides the parent package with `"type": "commonjs"`
+and carries the runtime `dependencies`, so the host can install them.
+
+Upload the **contents** of `dist-cjs/` - and nothing else - to your application root,
+keeping the `protocol/`, `rooms/`, `security/`, `utilities/` and `websocket/` subfolders:
+
+```text
+sigServer/
+├── package.json          <- from dist-cjs, do NOT replace it
+├── index.js
+├── config.js
+├── protocol/
+├── rooms/
+├── security/
+├── utilities/
+└── websocket/
+```
+
+> Do not also upload the project's own `package.json`. It would overwrite the generated one,
+> reintroduce `"type": "module"` and drop the `main` entry - and since it lives one level up
+> from the compiled files, its dependency list is not what the host installs. Everything the
+> deployment needs is already in `dist-cjs/package.json`.
+
+| cPanel field | Value |
+| --- | --- |
+| Node.js version | 20 or newer |
+| Application root | e.g. `sigServer` |
+| Application startup file | `index.js` |
+| Environment variables | `NODE_ENV=production`, `TRUST_PROXY=true` |
+
+Then press **Run NPM Install** and start the app. Without that step the process dies with
+`Error: Cannot find module 'zod'` - the compiled code is uploaded, but its two runtime
+dependencies (`ws`, `zod`) are not.
+
+Do not upload your local `node_modules`: cPanel's Node app manager replaces that folder with
+a symlink into a per-application virtualenv, and a real directory there fights with it.
+
+`TRUST_PROXY=true` is not optional here: without it every connection appears to come from
+the web server's own address and all per-IP limits become meaningless.
+
+### Alternative: a CommonJS shim
+
+If you would rather keep the ESM build, put this next to it and point the startup file at
+it instead:
+
+```javascript
+// app.cjs
+"use strict";
+import("./index.js").catch((error) => {
+  console.error(error);
+  process.exit(1);
+});
+```
+
+`.cjs` is always CommonJS regardless of `"type": "module"`, and the dynamic `import()`
+loads the ESM entry point. The CommonJS build above is preferred - it has one less moving
+part and gives clearer stack traces.
+
+### The wall that comes after the ESM error
+
+Fixing the loader gets the process to boot. It does **not** guarantee WebSockets work.
+
+LiteSpeed's LSAPI bridge (and Passenger's) is request oriented; an HTTP `Upgrade` to
+WebSocket does not reliably pass through the Node app manager. On LiteSpeed the supported
+route is a **WebSocket Proxy** entry mapping a URI to a host:port your app listens on,
+configured in the LiteSpeed WebAdmin console (WHM/root) - on shared hosting you have to ask
+the provider to add it.
+
+Verify before assuming it works:
+
+```bash
+curl -s https://your-domain.com/health
+```
+
+```bash
+node scripts/manual-test.mjs wss://your-domain.com
+```
+
+`/health` answering proves the process is alive and proxied. Only the second command proves
+the upgrade path works: it runs the entire create → join → offer/answer/ICE → leave → close
+choreography. If it hangs at the first frame, the host is not tunnelling WebSockets and no
+application-side change can fix it.
+
+### Why shared cPanel is a poor fit anyway
+
+- **Entry process limits.** Every WebSocket occupies a web server worker and an LVE entry
+  process for the whole session. Shared plans typically cap this around 20-40, so a couple of
+  full rooms can take the rest of the account's sites down with `508 Resource Limit Reached`.
+- **Idle reaping.** The app manager stops an app that has seen no requests for a few minutes.
+  A restart wipes every room, because rooms live in RAM by design.
+- **No control over timeouts.** Signaling sockets are meant to stay open for a whole play
+  session.
+
+A small VPS, or a container host such as Fly.io / Railway / Render, avoids all three and
+costs about the same. On a cPanel **VPS with root**, skip the Node app manager entirely: run
+the systemd unit below and add a LiteSpeed/Apache WebSocket proxy entry pointing at it.
+
 ## Health and monitoring
 
 | Endpoint | Use |

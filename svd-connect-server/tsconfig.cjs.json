@@ -1,0 +1,15 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist-cjs",
+    // CommonJS output for hosts whose Node loader require()s the startup file:
+    // LiteSpeed (lsnode.js) and Phusion Passenger both do, and both fail on ESM.
+    "module": "CommonJS",
+    "moduleResolution": "Node",
+    "declaration": false,
+    "sourceMap": false
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["tests/**/*", "vitest.config.ts"]
+}

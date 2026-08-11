@@ -81,6 +81,12 @@ Work through this before publishing the mod or exposing a signaling server to th
       SIPSorcery is upgraded, and confirm the zip still contains no `System.Net.Http.dll` or
       `System.Text.RegularExpressions.dll`.
 - [ ] The release zip contains exactly the assemblies the mod needs and nothing unexpected.
+- [ ] No bundled assembly collides with a different version already shipped by the game -
+      run the audit snippet in [debugging.md](debugging.md#assembly-version-collisions).
+      A collision makes SMAPI skip the mod entirely.
+- [ ] Every assembly reference in the packaged mod folder resolves against the mod folder
+      plus the game folder (see "RID-specific assemblies" in
+      [debugging.md](debugging.md)). SMAPI's Cecil rewriter fails the whole mod otherwise.
 - [ ] Dependencies are pinned in `package-lock.json` and the `.csproj`.
 
 ## Before you tag a release

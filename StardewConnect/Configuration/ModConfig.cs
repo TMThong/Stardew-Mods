@@ -8,7 +8,7 @@ namespace StardewConnect.Configuration
     internal class ModConfig
     {
         /// <summary>Signaling server URL. Must be <c>wss://</c> outside of local development.</summary>
-        public string SignalingServerUrl { get; set; } = "wss://localhost:8080";
+        public string SignalingServerUrl { get; set; } = "wss://rtc.thongdev.com";
 
         /// <summary>Opens the Stardew Connect menu.</summary>
         public SButton OpenMenuKey { get; set; } = SButton.F9;

@@ -16,11 +16,39 @@
       and System.Net.IPNetwork, and neither is shipped with the game or SMAPI.
     -->
     <BundleExtraAssemblies>ThirdParty,System</BundleExtraAssemblies>
+    <!--
+      ... except this one. Stardew Valley itself ships
+      Microsoft.Extensions.DependencyInjection.Abstractions 5.0.0.0 and loads it at startup.
+      Shipping our 8.0.0.0 copy makes SMAPI's Assembly.LoadFrom fail with
+      "Could not load file or assembly ... Version=8.0.0.0" and the whole mod is skipped.
+      SIPSorcery never binds to it at runtime (verified: a full DataChannel session works
+      with only the game's 5.0.0.0 present), so leaving it out is both safe and required.
+    -->
+    <IgnoreModFilePaths>Microsoft.Extensions.DependencyInjection.Abstractions.dll</IgnoreModFilePaths>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Pathoschild.Stardew.ModBuildConfig" Version="4.4.0" />
     <PackageReference Include="SIPSorcery" Version="10.0.13" />
   </ItemGroup>
+
+  <!--
+    NuGet places Tmds.LibC (a transitive dependency of Makaretu.Dns.Multicast, which
+    SIPSorcery uses for mDNS) under runtimes/<rid>/lib/. SMAPI rewrites every mod assembly
+    with Mono.Cecil, and Cecil only probes the mod folder root, so it fails with
+    "Failed to resolve assembly: 'Tmds.LibC'" and the mod is skipped.
+
+    Copying one copy to the root satisfies the resolver. The assembly is Linux-only at
+    runtime and is never executed on Windows, but it still has to be resolvable.
+  -->
+  <Target Name="FlattenRidAssembliesForCecil" AfterTargets="Build" BeforeTargets="AfterBuild">
+    <ItemGroup>
+      <RidOnlyAssemblies Include="$(TargetDir)runtimes\**\lib\**\*.dll" />
+    </ItemGroup>
+    <Copy SourceFiles="@(RidOnlyAssemblies)"
+          DestinationFolder="$(TargetDir)"
+          SkipUnchangedFiles="true"
+          Condition="'@(RidOnlyAssemblies)' != ''" />
+  </Target>
 
 </Project>

@@ -10,7 +10,9 @@
   },
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
+    "build:cjs": "tsc -p tsconfig.cjs.json && node scripts/finish-cjs-build.mjs",
     "start": "node dist/index.js",
+    "start:cjs": "node dist-cjs/index.js",
     "dev": "tsx watch src/index.ts",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run",
